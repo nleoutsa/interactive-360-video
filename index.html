@@ -3,11 +3,11 @@
     <head>
         <meta charset="utf-8">
         <title>Hapyak A-Frame Example</title>
-        <script src="aframe-0.1.3.js"></script>
-        <script src="jquery-2.2.2.js"></script>
-        <script src="html2canvas.js"></script>
-        <script src="projector.js"></script> <!-- include projector.js since it's been removed from THREE. There should be a newer way to accomplish this -->
-        <script src="canvasRenderer.js"></script> <!-- include canvasRenderer.js since it's been removed from THREE. There should be a newer way to accomplish this -->
+        <script src="vendor/aframe-0.1.3.js"></script>
+        <script src="vendor/jquery-2.2.2.js"></script>
+        <script src="vendor/html2canvas.js"></script>
+        <script src="vendor/projector.js"></script> <!-- include projector.js since it's been removed from THREE. There should be a newer way to accomplish this -->
+        <script src="vendor/canvasRenderer.js"></script> <!-- include canvasRenderer.js since it's been removed from THREE. There should be a newer way to accomplish this -->
 
         <style type="text/css">
             .textAnnotation {
@@ -230,7 +230,7 @@
                 // aScene.appendChild(aMark);
 
                 var aVideosphere = document.createElement('a-videosphere');
-                aVideosphere.setAttribute('src', 'car.mp4');
+                aVideosphere.setAttribute('src', 'videos/car.mp4');
                 aVideosphere.setAttribute('autoplay', 'true');
                 aScene.appendChild(aVideosphere);
 
