@@ -21,10 +21,11 @@
                 width: 100px;
                 height: 50px;
                 z-index: 99;
+                transform: translateX(-50%) translateY(-50%);
             }
             #annotationsContainer {
-                /*position: absolute;*/
-                /*z-index: 99;*/
+                position: absolute;
+                z-index: 99;
                 transform-style: preserve-3d;
                 transform: translateX(50vw) translateY(50vh);
             }
@@ -77,64 +78,21 @@
                     camRotX = cameraElement.components.rotation.data.x;
                     camRotY = cameraElement.components.rotation.data.y;
 
-                    annotationsContainer.style.transform = 'translateZ(' + 100 + 'px) translateX(' + coords.x + 'px) translateY(' + coords.y + 'px) rotateY(' + camRotY + 'deg)';
+                    annotationsContainer.style.transform = 'translateZ(' + 100 + 'px) translateX(' + coords.x + 'px) translateY(' + coords.y + 'px)'; //' rotateY(' + camRotY + 'deg)';
 
                     updateAnnotations(cycles + 1);
                 });
             }
 
-            function setupRaycaster() {
-                raycaster = new THREE.Raycaster();
-                mouse = new THREE.Vector2();
-
-                // annotationsContainer.appendChild( renderer.domElement );
-
-                addAnnotationObjectsForRaycasting();
-
-                document.addEventListener('mouseup', onDocumentMouseUp, false);
-                document.addEventListener('touchstart', onDocumentTouchStart, false);
-            }
-
-            function onDocumentTouchStart( event ) {
-
-                event.preventDefault();
-
-                event.clientX = event.touches[0].clientX;
-                event.clientY = event.touches[0].clientY;
-                onDocumentMouseUp(event);
-            }
-
-            function onDocumentMouseUp( event ) {
-                event.preventDefault();
-
-                mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-                mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-
-                raycaster.setFromCamera(mouse, camera);
-
-                var intersects = raycaster.intersectObjects(annotation3DObjects, true);
-
-                if (intersects.length > 0) {
-                    console.log('intersects');
-                }
-            }
 
             function addAnnotationsToScene() {
                 getAnnotations();
                 for (index in annotationList) {
-                    aScene.appendChild(createAFramePlaceholder(annotationList[index]));
-                }
-            }
-
-            function addAnnotationObjectsForRaycasting() {
-                for (index in annotationList) {
-                    var annotation3DObject = createAFramePlaceholder(annotationList[index]);
-                    annotation3DObjects.push(annotation3DObject.object3D);
+                    annotationsContainer.appendChild(annotationList[index]);
                 }
             }
 
             function createAFramePlaceholder (annotation) {
-                annotationsContainer.appendChild(annotation);
 
                 var aImage = document.createElement('a-image');
                 aImage.setAttribute('id', annotation.id);
@@ -196,24 +154,17 @@
 
                 var aCameraContainer = document.createElement('a-entity');
                 aCameraContainer.setAttribute('position', '0 0 0');
-                aCameraContainer.innerHTML = "" +
-                    "<a-entity camera look-controls id='main-camera'>" +
-                        // "<a-entity " +
-                        //     "cursor='maxDistance: 30; timeout: 500' " +
-                        //     "position='0 0 -6' " +
-                        //     "scale='0.1 0.1 1' " +
-                        //     "geometry='primitive: ring' " +
-                        //     "material='color: red; shader: flat'>" +
-                        // "</a-entity>" +
-                    "</a-entity>";
+                aCameraContainer.innerHTML = "<a-entity camera look-controls id='main-camera'></a-entity>";
 
                 aScene.appendChild(aCameraContainer);
 
-                // aMark = document.createElement('a-plane');
-                // aMark.setAttribute('id', 'aMark');
-                // aMark.setAttribute('position', '0 0 -7');
-                // aMark.setAttribute('look-at', '[camera]');
-                // aScene.appendChild(aMark);
+                aMark = document.createElement('a-plane');
+                aMark.setAttribute('id', 'aMark');
+                aMark.setAttribute('position', '7 7 -7');
+                aMark.setAttribute('look-at', '[camera]');
+                aMark.setAttribute('width', '0.1');
+                aMark.setAttribute('height', '0.1');
+                aScene.appendChild(aMark);
 
                 var aVideosphere = document.createElement('a-videosphere');
                 aVideosphere.setAttribute('src', 'videos/car.mp4');
@@ -228,16 +179,10 @@
             createAFrame360Scene();
 
             window.addEventListener("loaded", function (e, t) {
-                scene = aScene.object3D; // have to wait until after createAFrame360Scene() runs for aScene to exist in the DOM...
                 cameraElement = document.getElementById('main-camera');
                 camera = cameraElement.object3D.children[0]; // get actual THREE.js perspective camera...
-                renderer = aScene.monoRenderer;
-                // aScene.raycaster = aScene.components.raycaster;
 
-                setupRaycaster();
-
-                // updateAnnotations(0);
-
+                updateAnnotations(0);
             });
 
         </script>

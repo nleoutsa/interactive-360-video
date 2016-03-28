@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Hapyak A-Frame Example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <style type="text/css">
+            .textAnnotation {
+                position: absolute;
+                color: #fff;
+                background-color: #db6327;
+                border: 5px solid #333;
+                text-align: center;
+                font-size: 18px;
+                padding: 10px;
+                width: 100px;
+                height: 50px;
+                z-index: 99;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="vendor/aframe-0.1.3.js"></script>
+        <script src="vendor/jquery-2.2.2.js"></script>
+        <script src="vendor/html2canvas.js"></script>
+        <script src="vendor/projector.js"></script>
+        <script src="vendor/canvasRenderer.js"></script>
+
+        <script>
+            var container;
+            var camera;
+            var scene;
+            var renderer;
+            var raycaster;
+            var mouse;
+
+            var objects = [];
+
+            init();
+            animate();
+
+            function init() {
+
+                container = document.createElement( 'div' );
+                document.body.appendChild( container );
+
+                camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+                camera.position.set( 0, 300, 500 );
+
+                scene = new THREE.Scene();
+
+                addObjects();
+                addAnnotations();
+
+                raycaster = new THREE.Raycaster();
+                mouse = new THREE.Vector2();
+
+                renderer = new THREE.CanvasRenderer();
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                container.appendChild( renderer.domElement );
+
+                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+                document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+
+                window.addEventListener( 'resize', onWindowResize, false );
+            }
+
+            function addObjects() {
+                for ( var i = 0; i < 1; i ++ ) {
+                    var geometry = new THREE.CylinderGeometry( 0, 200, 400, 4, false );
+
+                    var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff, opacity: 1 } ) );
+
+                    scene.add( object );
+
+                    objects.push( object );
+                }
+            }
+
+            function addAnnotations() {
+
+            }
+
+            function onWindowResize() {
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize( window.innerWidth, window.innerHeight );
+            }
+
+            function onDocumentTouchStart( event ) {
+
+                event.preventDefault();
+
+                event.clientX = event.touches[0].clientX;
+                event.clientY = event.touches[0].clientY;
+                onDocumentMouseDown( event );
+            }
+
+            function onDocumentMouseDown( event ) {
+
+                event.preventDefault();
+
+                mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+                mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+
+                raycaster.setFromCamera( mouse, camera );
+
+                var intersects = raycaster.intersectObjects( objects );
+
+                if ( intersects.length > 0 ) {
+                    intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
+                    console.log('intersected with ', intersects[0]);
+                }
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                render();
+            }
+
+            var radius = 600;
+            var theta = 0;
+
+            function render() {
+                lookPosition = new THREE.Vector3();
+                camera.lookAt( lookPosition );
+
+                renderer.render( scene, camera );
+            }
+
+        </script>
+
+    </body>
+</html>
