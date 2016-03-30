@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
         <style type="text/css">
-            .textAnnotation {
+            #textAnnotation {
                 position: absolute;
                 color: #fff;
                 background-color: #db6327;
@@ -19,14 +19,95 @@
                 height: 50px;
                 z-index: 99;
             }
+            #cssSphere {
+                position: absolute;
+                left: 50vw;
+                top: 50vh;
+                user-select: none;
+                transform-style: preserve-3d;
+                transform: perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(0) rotateY(0) rotateZ(0);
+                transform-origin: 0 0;
+            }
+            #XYPlane,
+            #XZPlane,
+            #YZPlane {
+                transform-style: preserve-3d;
+                position: absolute;
+                opacity: 1;
+            }
+            #XYPlane .visiblePlane,
+            #XZPlane .visiblePlane,
+            #YZPlane .visiblePlane {
+                transform-style: preserve-3d;
+                position: absolute;
+                width: 5px;
+                height: 100px;
+            }
+
+            #XYPlane {
+                transform: rotateZ(90deg);
+            }
+            #XYPlane .visiblePlane {
+                background-color: #dd4466;
+            }
+
+            #XZPlane {
+                transform: rotateY(90deg);
+            }
+            #XZPlane .visiblePlane {
+                background-color: #ffaa00;
+            }
+
+            #YZPlane {
+                transform: rotateX(90deg);
+            }
+            #YZPlane .visiblePlane {
+                background-color: blue;
+            }
+
+            #textAnnotationWrapper {
+                transform-style: preserve-3d;
+                position: absolute;
+                opacity: 1;
+
+                /*transform: rotateX(90deg);*/
+            }
+            #textAnnotation {
+                transform-style: preserve-3d;
+                position: absolute;
+                width: 300px;
+                height: 300px;
+
+                background-color: white;
+                border: 30px solid #ffaa00;
+
+                transform: rotateY(90deg) translateZ(3000px);
+            }
+
         </style>
     </head>
     <body>
-        <script src="vendor/aframe-0.1.3.js"></script>
-        <script src="vendor/jquery-2.2.2.js"></script>
+
+        <div id="cssSphere">
+            <div id="XYPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="XZPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="YZPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="textAnnotationWrapper">
+                <div id="textAnnotation">Annotation</div>
+            </div>
+        </div>
+
+        <script src="build/three.min.js"></script>
         <script src="vendor/html2canvas.js"></script>
-        <script src="vendor/projector.js"></script>
-        <script src="vendor/canvasRenderer.js"></script>
+        <script src="js/renderers/projector.js"></script>
+        <script src="js/renderers/canvasRenderer.js"></script>
+        <script src="js/controls/orbitControls.js"></script>
 
         <script>
             var container;
@@ -35,6 +116,13 @@
             var renderer;
             var raycaster;
             var mouse;
+            var video;
+            var videocanvas;
+            var videocanvasctx;
+            var spheretexture;
+            var controls;
+
+            var cssSphere = document.getElementById('cssSphere');
 
             var objects = [];
 
@@ -42,67 +130,63 @@
             animate();
 
             function init() {
-
-                container = document.createElement( 'div' );
-                document.body.appendChild( container );
-
-                camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-                camera.position.set( 0, 300, 500 );
+                container = document.createElement('div');
+                container.className = '3DContainer';
+                document.body.appendChild(container);
 
                 scene = new THREE.Scene();
 
-                addObjects();
-                addAnnotations();
+                camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.target = new THREE.Vector3(0, 0, 0);
+                camera.position.z = 100;
+
+                controls = new THREE.OrbitControls( camera );
+                controls.addEventListener( 'change', render );
 
                 raycaster = new THREE.Raycaster();
                 mouse = new THREE.Vector2();
 
-                renderer = new THREE.CanvasRenderer();
-                renderer.setPixelRatio( window.devicePixelRatio );
-                renderer.setSize( window.innerWidth, window.innerHeight );
-                container.appendChild( renderer.domElement );
+                renderer = new THREE.WebGLRenderer();
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                container.appendChild(renderer.domElement);
 
-                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-                document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+                // setup video
+                video = document.createElement('video');
+                video.src = "videos/car.mp4";
+                video.load();
+                video.play();
 
-                window.addEventListener( 'resize', onWindowResize, false );
+                sphere = new THREE.SphereGeometry(600, 100, 100);
+                sphere.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+
+                spheretexture = new THREE.VideoTexture( video );
+                spheretexture.minFilter = THREE.LinearFilter;
+                spheretexture.magFilter = THREE.LinearFilter;
+
+                var material = new THREE.MeshBasicMaterial({map: spheretexture});
+                var sphereMesh = new THREE.Mesh(sphere, material);
+
+                scene.add(sphereMesh);
+                addObjects();
+
+                document.addEventListener("mouseup", onDocumentMouseUp, false);
             }
 
             function addObjects() {
                 for ( var i = 0; i < 1; i ++ ) {
-                    var geometry = new THREE.CylinderGeometry( 0, 200, 400, 4, false );
+                    var geometry = new THREE.PlaneGeometry(200, 200, 1, 1);
+                    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+                    var plane = new THREE.Mesh(geometry, material);
 
-                    var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff, opacity: 1 } ) );
+                    plane.position.z = 550;
 
-                    scene.add( object );
-
-                    objects.push( object );
+                    scene.add(plane);
+                    objects.push(plane);
                 }
             }
 
-            function addAnnotations() {
-
-            }
-
-            function onWindowResize() {
-
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-
-                renderer.setSize( window.innerWidth, window.innerHeight );
-            }
-
-            function onDocumentTouchStart( event ) {
-
-                event.preventDefault();
-
-                event.clientX = event.touches[0].clientX;
-                event.clientY = event.touches[0].clientY;
-                onDocumentMouseDown( event );
-            }
-
-            function onDocumentMouseDown( event ) {
-
+            function onDocumentMouseUp( event ) {
                 event.preventDefault();
 
                 mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
@@ -114,25 +198,33 @@
 
                 if ( intersects.length > 0 ) {
                     intersects[ 0 ].object.material.color.setHex( Math.random() * 0xffffff );
-                    console.log('intersected with ', intersects[0]);
+                    console.log('intersected with ', intersects[0].object.type);
                 }
+            }
+
+            function updateCSSSphere() {
+                var rot = camera.rotation;
+
+                cssSphere.style.transform = 'perspective(300px) translateX(0) translateY(0) translateZ(0) rotateX(' + radToDeg(rot.y) + 'deg) rotateY(' + -radToDeg(rot.x) + 'deg) rotateZ(' + radToDeg(rot.z) + 'deg)';
+            }
+
+            function radToDeg(rad) {
+                return rad * (180 / Math.PI);
             }
 
             function animate() {
                 requestAnimationFrame(animate);
+
+                controls.update();
+
+                updateCSSSphere();
+
                 render();
             }
 
-            var radius = 600;
-            var theta = 0;
-
             function render() {
-                lookPosition = new THREE.Vector3();
-                camera.lookAt( lookPosition );
-
                 renderer.render( scene, camera );
             }
-
         </script>
 
     </body>

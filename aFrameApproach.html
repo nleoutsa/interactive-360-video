@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hapyak A-Frame Example</title>
+
+        <script src="build/three.min.js"></script>
+        <script src="vendor/html2canvas.js"></script>
+        <script src="vendor/aframe-0.1.3.js"></script>
+        <script src="js/renderers/Projector.js"></script>
+
+        <style type="text/css">
+            .textAnnotation {
+                color: #fff;
+                background-color: #db6327;
+                border: 5px solid #333;
+                border-radius: 15px;
+                text-align: center;
+                font-size: 18px;
+                padding: 10px;
+                width: 100px;
+                height: 50px;
+                z-index: 99;
+            }
+            #annotationsContainer {
+                transform-style: preserve-3d;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="aSceneContainer"></div>
+
+        <div id="annotationsContainer"></div>
+
+        <script type="text/javascript">
+            var WIDTH = window.innerWidth;
+            var HEIGHT = window.innerHeight;
+
+            var aSceneContainer = document.getElementById('aSceneContainer');
+            var annotationsContainer = document.getElementById('annotationsContainer');
+
+            var annotationList = []; // will come from hapyak annotation list
+
+            var aScene,
+                aMark,
+                cameraElement;
+
+            function getAnnotations () {
+                // for now, create fake pop annotation
+                var annotationWrapper = document.createElement('div');
+                var popAnnotation = document.createElement('div');
+                annotationWrapper.appendChild(popAnnotation);
+                var popLink = document.createElement('a');
+                popLink.setAttribute('href', 'http://www.hapyak.com')
+                popLink.innerHTML = "HapYak";
+                popAnnotation.appendChild(popLink);
+                annotationWrapper.className = "textAnnotation";
+                annotationWrapper.id = "textAnnotation";
+                annotationList.push(annotationWrapper);
+            }
+
+            function addAnnotationsToScene() {
+                getAnnotations();
+                for (index in annotationList) {
+                    aScene.appendChild(createAFramePlaceholder(annotationList[index]));
+                }
+            }
+
+            function createAFramePlaceholder (annotation) {
+                annotationsContainer.appendChild(annotation);
+
+                var aImage = document.createElement('a-image');
+                aImage.setAttribute('id', annotation.id);
+                aImage.setAttribute('look-at', '[camera]');
+                aImage.setAttribute('position', '0 0 -7');
+                aImage.setAttribute('linkUrl', annotation.childNodes[0].childNodes[0].href);
+
+                html2canvas(annotation, {
+                    onrendered: function(canvas) {
+                        var imageUrl = canvas.toDataURL("image/png");
+
+                        aImage.setAttribute('src', imageUrl);
+                        aImage.setAttribute('width', canvas.width / 100);
+                        aImage.setAttribute('height', canvas.height / 100);
+                    }
+                });
+
+                aImage.addEventListener('mouseup', function (e) {
+                    if (e) {
+                        if (aImage.getAttribute('linkUrl')) {
+                            window.open(aImage.getAttribute('linkUrl'),'_blank');
+                        }
+                    }
+                });
+
+                return aImage;
+            }
+
+            function createAFrame360Scene() {
+                aScene = document.createElement('a-scene');
+
+                var aCameraContainer = document.createElement('a-entity');
+                aCameraContainer.setAttribute('position', '0 0 0');
+                aCameraContainer.innerHTML = "" +
+                    "<a-entity camera look-controls id='main-camera'>" +
+                        // "<a-entity " +
+                        //     "cursor='maxDistance: 30; timeout: 500' " +
+                        //     "position='0 0 -6' " +
+                        //     "scale='0.1 0.1 1' " +
+                        //     "geometry='primitive: ring' " +
+                        //     "material='color: red; shader: flat'>" +
+                        // "</a-entity>" +
+                    "</a-entity>";
+
+                aScene.appendChild(aCameraContainer);
+
+                var aVideosphere = document.createElement('a-videosphere');
+                aVideosphere.setAttribute('src', 'videos/car.mp4');
+                // aVideosphere.setAttribute('autoplay', 'true');
+                aScene.appendChild(aVideosphere);
+
+                addAnnotationsToScene();
+
+                aSceneContainer.appendChild(aScene);
+            }
+
+            createAFrame360Scene();
+
+            window.addEventListener("loaded", function (e, t) {
+
+            });
+
+        </script>
+    </body>
+</html>

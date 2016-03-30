@@ -6,36 +6,107 @@
         <script src="vendor/aframe-0.1.3.js"></script>
         <script src="vendor/jquery-2.2.2.js"></script>
         <script src="vendor/html2canvas.js"></script>
-        <script src="vendor/projector.js"></script> <!-- include projector.js since it's been removed from THREE. There should be a newer way to accomplish this -->
-        <script src="vendor/canvasRenderer.js"></script> <!-- include canvasRenderer.js since it's been removed from THREE. There should be a newer way to accomplish this -->
+        <script src="js/renderers/Projector.js"></script> <!-- include projector.js since it's been removed from THREE. There should be a newer way to accomplish this -->
 
         <style type="text/css">
-            .textAnnotation {
+            #cssSphere {
                 position: absolute;
-                color: #fff;
-                background-color: #db6327;
-                border: 5px solid #333;
-                text-align: center;
-                font-size: 18px;
-                padding: 10px;
-                width: 100px;
-                height: 50px;
-                z-index: 99;
-                transform: translateX(-50%) translateY(-50%);
-            }
-            #annotationsContainer {
-                position: absolute;
-                z-index: 99;
+                left: 50vw;
+                top: 50vh;
+                user-select: none;
                 transform-style: preserve-3d;
-                transform: translateX(50vw) translateY(50vh);
+                transform: perspective(1000px) translateX(0) translateY(0) translateZ(0) rotateX(0) rotateY(0) rotateZ(0);
+                transform-origin: 0 0;
+                z-index: 99;
             }
+            #XYPlane,
+            #XZPlane,
+            #YZPlane {
+                transform-style: preserve-3d;
+                position: absolute;
+                opacity: 1;
+            }
+            #XYPlane .visiblePlane,
+            #XZPlane .visiblePlane,
+            #YZPlane .visiblePlane {
+                transform-style: preserve-3d;
+                position: absolute;
+                width: 5px;
+                height: 100px;
+            }
+
+            #XYPlane {
+                transform: rotateZ(90deg);
+            }
+            #XYPlane .visiblePlane {
+                background-color: #dd4466;
+            }
+
+            #XZPlane {
+                transform: rotateY(90deg);
+            }
+            #XZPlane .visiblePlane {
+                background-color: #ffaa00;
+            }
+
+            #YZPlane {
+                transform: rotateX(90deg);
+            }
+            #YZPlane .visiblePlane {
+                background-color: blue;
+            }
+
+            #textAnnotationWrapper {
+                transform-style: preserve-3d;
+                position: absolute;
+                opacity: 1;
+
+                /*transform: rotateX(90deg);*/
+            }
+            #textAnnotation:link,
+            #textAnnotation:visited,
+            #textAnnotation {
+                transform-style: preserve-3d;
+                position: absolute;
+                width: 200px;
+                height: 200px;
+
+                background-color: #fff;
+                border: 30px solid #ffaa00;
+                left: 50%;
+                top: 50%;
+                color: #333;
+                text-align: center;
+                font-size:
+                transition: background-color 0.3s ease, color 0.3s ease;
+
+                transform: translateZ(-10000px) translateX(-50%) translateY(-50%) scale(10);
+            }
+            #textAnnotation:hover {
+                background-color: #cc8800;
+                color: #fff;
+            }
+
         </style>
     </head>
     <body>
 
         <div id="aSceneContainer"></div>
 
-        <div id="annotationsContainer"></div>
+        <div id="cssSphere">
+            <div id="XYPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="XZPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="YZPlane">
+                <div class="visiblePlane"></div>
+            </div>
+            <div id="textAnnotationWrapper">
+                <a id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
+            </div>
+        </div>
 
         <script type="text/javascript">
             var WIDTH = window.innerWidth;
@@ -44,18 +115,14 @@
             var projector = new THREE.Projector();
 
             var aSceneContainer = document.getElementById('aSceneContainer');
-            var annotationsContainer = document.getElementById('annotationsContainer');
+            var cssSphere = document.getElementById('cssSphere');
 
             var annotationList = []; // will come from hapyak annotation list
-            var annotation3DObjects = [];
 
             var aScene,
                 aMark,
                 cameraElement,
-                camera,
-                raycaster,
-                mouse,
-                renderer;
+                camera;
 
             function getAnnotations () {
                 // for now, create fake pop annotation
@@ -75,10 +142,11 @@
                 window.requestAnimationFrame(function () {
                     var coords = get2DCoordinates(aMark);
 
-                    camRotX = cameraElement.components.rotation.data.x;
-                    camRotY = cameraElement.components.rotation.data.y;
+                    rotX = cameraElement.components.rotation.data.x;
+                    rotY = cameraElement.components.rotation.data.y;
+                    rotZ = cameraElement.components.rotation.data.z;
 
-                    annotationsContainer.style.transform = 'translateZ(' + 100 + 'px) translateX(' + coords.x + 'px) translateY(' + coords.y + 'px)'; //' rotateY(' + camRotY + 'deg)';
+                    cssSphere.style.transform = 'perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotX + 'deg) rotateY(' + -rotY + 'deg)';
 
                     updateAnnotations(cycles + 1);
                 });
@@ -92,33 +160,8 @@
                 }
             }
 
-            function createAFramePlaceholder (annotation) {
-
-                var aImage = document.createElement('a-image');
-                aImage.setAttribute('id', annotation.id);
-                aImage.setAttribute('look-at', '[camera]');
-                aImage.setAttribute('position', '0 0 -7');
-                aImage.setAttribute('linkUrl', annotation.childNodes[0].childNodes[0].href);
-
-                html2canvas(annotation, {
-                    onrendered: function(canvas) {
-                        var imageUrl = canvas.toDataURL("image/png");
-
-                        aImage.setAttribute('src', imageUrl);
-                        aImage.setAttribute('width', canvas.width / 100);
-                        aImage.setAttribute('height', canvas.height / 100);
-                    }
-                });
-
-                aImage.addEventListener('mouseup', function (e) {
-                    if (e) {
-                        if (aImage.getAttribute('linkUrl')) {
-                            window.open(aImage.getAttribute('linkUrl'),'_blank');
-                        }
-                    }
-                });
-
-                return aImage;
+            function radToDeg(rad) {
+                return rad * (180 / Math.PI);
             }
 
             function get2DCoordinates(placeholder) {
@@ -160,10 +203,10 @@
 
                 aMark = document.createElement('a-plane');
                 aMark.setAttribute('id', 'aMark');
-                aMark.setAttribute('position', '7 7 -7');
-                aMark.setAttribute('look-at', '[camera]');
-                aMark.setAttribute('width', '0.1');
-                aMark.setAttribute('height', '0.1');
+                aMark.setAttribute('position', '0 0 -7');
+                aMark.setAttribute('look-at', '[camera]') ;
+                // aMark.setAttribute('width', '0.1');
+                // aMark.setAttribute('height', '0.1');
                 aScene.appendChild(aMark);
 
                 var aVideosphere = document.createElement('a-videosphere');
@@ -171,7 +214,7 @@
                 // aVideosphere.setAttribute('autoplay', 'true');
                 aScene.appendChild(aVideosphere);
 
-                addAnnotationsToScene();
+                // addAnnotationsToScene();
 
                 aSceneContainer.appendChild(aScene);
             }
