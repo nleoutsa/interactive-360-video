@@ -4,9 +4,6 @@
         <meta charset="utf-8">
         <title>Hapyak A-Frame Example</title>
         <script src="vendor/aframe-0.1.3.js"></script>
-        <script src="vendor/jquery-2.2.2.js"></script>
-        <script src="vendor/html2canvas.js"></script>
-        <script src="js/renderers/Projector.js"></script> <!-- include projector.js since it's been removed from THREE. There should be a newer way to accomplish this -->
 
         <style type="text/css">
             #cssSphere {
@@ -15,76 +12,56 @@
                 top: 50vh;
                 user-select: none;
                 transform-style: preserve-3d;
-                transform: perspective(1000px) translateX(0) translateY(0) translateZ(0) rotateX(0) rotateY(0) rotateZ(0);
+                transform: perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(0) rotateY(0) rotateZ(0);
                 transform-origin: 0 0;
                 z-index: 99;
             }
-            #XYPlane,
-            #XZPlane,
-            #YZPlane {
+
+            .position3d {
                 transform-style: preserve-3d;
                 position: absolute;
-                opacity: 1;
-            }
-            #XYPlane .visiblePlane,
-            #XZPlane .visiblePlane,
-            #YZPlane .visiblePlane {
-                transform-style: preserve-3d;
-                position: absolute;
-                width: 5px;
-                height: 100px;
+                left: 50%;
+                top: 50%;
+
+                /* each annotation will need a unique transform to position it on the circumference of the 'css sphere' */
+                transform: rotateY(0deg) rotateX(0deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
             }
 
-            #XYPlane {
-                transform: rotateZ(90deg);
-            }
-            #XYPlane .visiblePlane {
-                background-color: #dd4466;
-            }
-
-            #XZPlane {
-                transform: rotateY(90deg);
-            }
-            #XZPlane .visiblePlane {
-                background-color: #ffaa00;
-            }
-
-            #YZPlane {
-                transform: rotateX(90deg);
-            }
-            #YZPlane .visiblePlane {
-                background-color: blue;
-            }
-
-            #textAnnotationWrapper {
-                transform-style: preserve-3d;
-                position: absolute;
-                opacity: 1;
-
-                /*transform: rotateX(90deg);*/
-            }
             #textAnnotation:link,
             #textAnnotation:visited,
             #textAnnotation {
-                transform-style: preserve-3d;
-                position: absolute;
                 width: 200px;
                 height: 200px;
 
                 background-color: #fff;
                 border: 30px solid #ffaa00;
-                left: 50%;
-                top: 50%;
                 color: #333;
                 text-align: center;
-                font-size:
+                -webkit-transition: background-color 0.3s ease, color 0.3s ease;
                 transition: background-color 0.3s ease, color 0.3s ease;
 
-                transform: translateZ(-10000px) translateX(-50%) translateY(-50%) scale(10);
+                transform: rotateY(180deg) rotateX(-10deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(10);
             }
             #textAnnotation:hover {
                 background-color: #cc8800;
                 color: #fff;
+            }
+
+            #imageAnnotation {
+                -webkit-transition: box-shadow 0.3s ease;
+                transition: box-shadow 0.3s ease;
+
+                transform: rotateY(-45deg) rotateX(20deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
+            }
+            #imageAnnotation:hover {
+                box-shadow: 0 0 30px white;
+            }
+
+            #formAnnotation {
+                width: 170px;
+                height: 250px;
+                background-color: #fff;
+                transform: rotateY(25deg) rotateX(-10deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
             }
 
         </style>
@@ -94,57 +71,41 @@
         <div id="aSceneContainer"></div>
 
         <div id="cssSphere">
-            <div id="XYPlane">
-                <div class="visiblePlane"></div>
-            </div>
-            <div id="XZPlane">
-                <div class="visiblePlane"></div>
-            </div>
-            <div id="YZPlane">
-                <div class="visiblePlane"></div>
-            </div>
-            <div id="textAnnotationWrapper">
-                <a id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
-            </div>
+
+            <a class="position3d" id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
+
+            <img class="position3d" id="imageAnnotation" src="images/hy_full.png"/>
+
+            <form class="position3d" id="formAnnotation">
+                <h1>Form</h1>
+                <label for="first">first<input name="first"/></label>
+                <label for="last">last<input name="last"/></label>
+                <label for="email">email<input name="email"/></label>
+                <button>Submit</button>
+            </form>
         </div>
 
         <script type="text/javascript">
-            var WIDTH = window.innerWidth;
-            var HEIGHT = window.innerHeight;
-
-            var projector = new THREE.Projector();
-
             var aSceneContainer = document.getElementById('aSceneContainer');
             var cssSphere = document.getElementById('cssSphere');
 
-            var annotationList = []; // will come from hapyak annotation list
+            var cameraElement;
 
-            var aScene,
-                aMark,
-                cameraElement,
-                camera;
+            // call to setup aframe scene
+            createAFrame360Scene();
 
-            function getAnnotations () {
-                // for now, create fake pop annotation
-                var annotationWrapper = document.createElement('div');
-                var popAnnotation = document.createElement('div');
-                annotationWrapper.appendChild(popAnnotation);
-                var popLink = document.createElement('a');
-                popLink.setAttribute('href', 'http://www.hapyak.com')
-                popLink.innerHTML = "HapYak";
-                popAnnotation.appendChild(popLink);
-                annotationWrapper.className = "textAnnotation";
-                annotationWrapper.id = "textAnnotation";
-                annotationList.push(annotationWrapper);
-            }
+            // listen for aframe to finish loading then start the render update process
+            window.addEventListener("loaded", function (e, t) {
+                cameraElement = document.getElementById('main-camera');
+
+                updateAnnotations(0);
+            });
 
             function updateAnnotations (cycles) {
                 window.requestAnimationFrame(function () {
-                    var coords = get2DCoordinates(aMark);
 
                     rotX = cameraElement.components.rotation.data.x;
                     rotY = cameraElement.components.rotation.data.y;
-                    rotZ = cameraElement.components.rotation.data.z;
 
                     cssSphere.style.transform = 'perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotX + 'deg) rotateY(' + -rotY + 'deg)';
 
@@ -152,48 +113,12 @@
                 });
             }
 
-
-            function addAnnotationsToScene() {
-                getAnnotations();
-                for (index in annotationList) {
-                    annotationsContainer.appendChild(annotationList[index]);
-                }
-            }
-
             function radToDeg(rad) {
                 return rad * (180 / Math.PI);
             }
 
-            function get2DCoordinates(placeholder) {
-
-                var coords = {};
-
-                var position3D,
-                    vector2D,
-                    percentX,
-                    percentY;
-
-                var vector = new THREE.Vector3();
-                // Get webgl object's position relative to world
-                // position3D = placeholder.object3D.matrixWorld.getPosition().clone();
-                vector.setFromMatrixPosition(placeholder.object3D.matrixWorld);
-
-                // // use 'project' to translate position to 2D view that the perspective camera renders
-                vector2D = vector.project(camera);
-
-                // translate vector so that
-                // vector2D.x & vector2D.y have range [-1, 1].
-                // add 1 to them and divide by 2 so 0 represents left & top edges
-                // and 1 represents right & bottom edges
-                // then multiply by screen width or height to get pixel value
-                coords.x = ((vector2D.x + 1) / 2) * WIDTH;
-                coords.y = ((-vector2D.y + 1) / 2) * HEIGHT;
-
-                return coords;
-            }
-
             function createAFrame360Scene() {
-                aScene = document.createElement('a-scene');
+                var aScene = document.createElement('a-scene');
 
                 var aCameraContainer = document.createElement('a-entity');
                 aCameraContainer.setAttribute('position', '0 0 0');
@@ -201,33 +126,12 @@
 
                 aScene.appendChild(aCameraContainer);
 
-                aMark = document.createElement('a-plane');
-                aMark.setAttribute('id', 'aMark');
-                aMark.setAttribute('position', '0 0 -7');
-                aMark.setAttribute('look-at', '[camera]') ;
-                // aMark.setAttribute('width', '0.1');
-                // aMark.setAttribute('height', '0.1');
-                aScene.appendChild(aMark);
-
                 var aVideosphere = document.createElement('a-videosphere');
                 aVideosphere.setAttribute('src', 'videos/car.mp4');
-                // aVideosphere.setAttribute('autoplay', 'true');
                 aScene.appendChild(aVideosphere);
-
-                // addAnnotationsToScene();
 
                 aSceneContainer.appendChild(aScene);
             }
-
-            createAFrame360Scene();
-
-            window.addEventListener("loaded", function (e, t) {
-                cameraElement = document.getElementById('main-camera');
-                camera = cameraElement.object3D.children[0]; // get actual THREE.js perspective camera...
-
-                updateAnnotations(0);
-            });
-
         </script>
     </body>
 </html>
