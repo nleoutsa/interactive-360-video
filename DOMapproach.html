@@ -17,21 +17,43 @@
                 z-index: 99;
             }
 
-            .position3d {
+            .globalRotationWrapper {
+                transform-style: preserve-3d;
+                position: absolute;
+
+                /* each annotation will need a unique transform to position it on the circumference of the 'css sphere' */
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            .globalTranslationWrapper {
                 transform-style: preserve-3d;
                 position: absolute;
                 left: 50%;
                 top: 50%;
 
+                transform: translateZ(-5000px) translateX(-50%) translateY(-50%) scale(5);
+            }
+            .localRotationWrapper {
+                transform-style: preserve-3d;
+                position: absolute;
+
                 /* each annotation will need a unique transform to position it on the circumference of the 'css sphere' */
-                transform: rotateY(0deg) rotateX(0deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
+                transform: rotateY(0deg) rotateX(0deg);
+            }
+            .localTranslationWrapper {
+                transform-style: preserve-3d;
+                position: absolute;
+                transform: translateZ(0) translateX(0) translateY(0);
             }
 
+            #textAnnotationGlobalRotation {
+                transform: rotateY(88deg) rotateX(8deg);
+            }
             #textAnnotation:link,
             #textAnnotation:visited,
             #textAnnotation {
                 width: 200px;
                 height: 200px;
+                font-size: 60px;
 
                 background-color: #fff;
                 border: 30px solid #ffaa00;
@@ -40,28 +62,52 @@
                 -webkit-transition: background-color 0.3s ease, color 0.3s ease;
                 transition: background-color 0.3s ease, color 0.3s ease;
 
-                transform: rotateY(180deg) rotateX(-10deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(10);
             }
             #textAnnotation:hover {
                 background-color: #cc8800;
                 color: #fff;
             }
 
+            #imageAnnotationGlobalRotation {
+                transform: rotateY(0deg) rotateX(0deg);
+            }
             #imageAnnotation {
                 -webkit-transition: box-shadow 0.3s ease;
                 transition: box-shadow 0.3s ease;
-
-                transform: rotateY(-45deg) rotateX(20deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
             }
             #imageAnnotation:hover {
                 box-shadow: 0 0 30px white;
             }
 
+            #formAnnotationGlobalRotation {
+                transform: rotateY(400deg) rotateX(-30deg);
+            }
+            #formAnnotationLocalRotation {
+                transform: rotateY(0deg) rotateX(0deg) rotateZ(0deg);
+            }
             #formAnnotation {
-                width: 170px;
-                height: 250px;
+                width: 350px;
+                height: 400px;
                 background-color: #fff;
-                transform: rotateY(25deg) rotateX(-10deg) translateZ(-10000px) translateX(-50%) translateY(-50%) scale(15);
+                font-size: 40px;
+                text-align: center;
+                padding: 20px;
+            }
+            #formAnnotation label {
+                display: block;
+                text-align: left;
+                width: 100%;
+            }
+            #formAnnotation input {
+                position: absolute;
+                right: 0;
+                height: 40px;
+                font-size: 40px;
+                width: 190px;
+            }
+            #formAnnotation button {
+                font-size: 40px;
+                margin-top: 20px;
             }
 
         </style>
@@ -72,17 +118,35 @@
 
         <div id="cssSphere">
 
-            <a class="position3d" id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
+            <div class="globalRotationWrapper" id="textAnnotationGlobalRotation">
+                <div class="globalTranslationWrapper">
+                    <div class="localRotationWrapper">
+                        <a id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
+                    </div>
+                </div>
+            </div>
 
-            <img class="position3d" id="imageAnnotation" src="images/hy_full.png"/>
+            <div class="globalRotationWrapper" id="imageAnnotationGlobalRotation">
+                <div class="globalTranslationWrapper">
+                    <div class="localRotationWrapper">
+                        <img id="imageAnnotation" src="images/hy_full.png"/>
+                    </div>
+                </div>
+            </div>
 
-            <form class="position3d" id="formAnnotation">
-                <h1>Form</h1>
-                <label for="first">first<input name="first"/></label>
-                <label for="last">last<input name="last"/></label>
-                <label for="email">email<input name="email"/></label>
-                <button>Submit</button>
-            </form>
+            <div class="globalRotationWrapper" id="formAnnotationGlobalRotation">
+                <div class="globalTranslationWrapper">
+                    <div class="localRotationWrapper" id="formAnnotationLocalRotation">
+                        <form id="formAnnotation">
+                            <h1>Form</h1>
+                            <label for="first">first:<input name="first"/></label>
+                            <label for="last">last:<input name="last"/></label>
+                            <label for="email">email:<input name="email"/></label>
+                            <button>Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script type="text/javascript">
@@ -90,6 +154,9 @@
             var cssSphere = document.getElementById('cssSphere');
 
             var cameraElement;
+            var aScene;
+            var aVideosphere;
+            var sceneHeight;
 
             // call to setup aframe scene
             createAFrame360Scene();
@@ -101,24 +168,28 @@
                 updateAnnotations(0);
             });
 
+            window.addEventListener('resize', onWindowResize, false);
+
+            function onWindowResize() {
+                sceneHeight = aScene.canvas.clientHeight;
+            }
+
             function updateAnnotations (cycles) {
                 window.requestAnimationFrame(function () {
-
                     rotX = cameraElement.components.rotation.data.x;
                     rotY = cameraElement.components.rotation.data.y;
 
-                    cssSphere.style.transform = 'perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotX + 'deg) rotateY(' + -rotY + 'deg)';
+                    sceneHeight = aScene.canvas.clientHeight;
+                    var perspective = (sceneHeight / 2) + (sceneHeight / 8) + (sceneHeight / 32) + (sceneHeight / 128);
+
+                    cssSphere.style.transform = 'perspective(' + perspective + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotX + 'deg) rotateY(' + -rotY + 'deg)';
 
                     updateAnnotations(cycles + 1);
                 });
             }
 
-            function radToDeg(rad) {
-                return rad * (180 / Math.PI);
-            }
-
             function createAFrame360Scene() {
-                var aScene = document.createElement('a-scene');
+                aScene = document.createElement('a-scene');
 
                 var aCameraContainer = document.createElement('a-entity');
                 aCameraContainer.setAttribute('position', '0 0 0');
@@ -126,7 +197,7 @@
 
                 aScene.appendChild(aCameraContainer);
 
-                var aVideosphere = document.createElement('a-videosphere');
+                aVideosphere = document.createElement('a-videosphere');
                 aVideosphere.setAttribute('src', 'videos/car.mp4');
                 aScene.appendChild(aVideosphere);
 
