@@ -1,0 +1,10 @@
+#cssSphere {
+    position: absolute;
+    transform-style: preserve-3d;
+    left: 50vw;
+    top: 50vh;
+    user-select: none;
+    transform: perspective(600px) translateX(0) translateY(0) translateZ(0) rotateX(0) rotateY(0) rotateZ(0);
+    transform-origin: 0 0;
+    z-index: 99;
+}

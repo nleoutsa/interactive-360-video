@@ -1,0 +1,53 @@
+
+#textAnnotation:link,
+#textAnnotation:visited,
+#textAnnotation {
+    width: 200px;
+    height: 200px;
+    font-size: 60px;
+
+    background-color: #fff;
+    border: 30px solid #ffaa00;
+    color: #333;
+    text-align: center;
+    -webkit-transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+}
+#textAnnotation:hover {
+    background-color: #cc8800;
+    color: #fff;
+}
+
+#imageAnnotation {
+    -webkit-transition: box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
+}
+#imageAnnotation:hover {
+    box-shadow: 0 0 30px white;
+}
+
+#formAnnotation {
+    width: 350px;
+    height: 400px;
+    background-color: #fff;
+    font-size: 40px;
+    text-align: center;
+    padding: 20px;
+}
+#formAnnotation label {
+    display: block;
+    text-align: left;
+    width: 100%;
+}
+#formAnnotation input {
+    position: absolute;
+    right: 0;
+    height: 40px;
+    font-size: 40px;
+    width: 190px;
+}
+#formAnnotation button {
+    font-size: 40px;
+    margin-top: 20px;
+}

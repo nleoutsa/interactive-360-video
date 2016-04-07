@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hapyak A-Frame Example</title>
+        <link rel="stylesheet" type="text/css" href="css/cssSphere.css">
+        <link rel="stylesheet" type="text/css" href="css/myCss.css">
+    </head>
+    <body>
+
+        <div id="cssSphereContainer"></div>
+
+<!-- TODO: generate the CssSphere element and populate it dynamically via API -->
+        <!-- <div id="cssSphere"> -->
+            <div class="globalRotationWrapper" id="textAnnotationGlobalRotation">
+                <div class="globalTranslationWrapper">
+                    <div class="localRotationWrapper">
+                        <a id="textAnnotation" href="www.hapyak.com" target="_blank">Annotation</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="globalRotationWrapper" id="imageAnnotationGlobalRotation">
+                <div class="globalTranslationWrapper">
+                    <div class="localRotationWrapper">
+                        <img id="imageAnnotation" src="images/hy_full.png"/>
+                    </div>
+                </div>
+            </div>
+
+            <form id="formAnnotation">
+                <h1>Form</h1>
+                <label for="first">first:<input name="first"/></label>
+                <label for="last">last:<input name="last"/></label>
+                <label for="email">email:<input name="email"/></label>
+                <button>Submit</button>
+            </form>
+        <!-- </div> -->
+
+        <script src="vendor/aframe-0.1.3.js"></script>
+        <script type="text/javascript" src="js/cssSphere.js"></script>
+
+        <script type="text/javascript">
+            var myCssSphere = new CssSphere();
+            myCssSphere.generateScene('images/Venice360.jpeg');
+            myCssSphere.addDOMElementToScene('formAnnotation', [0, 0, 30, 0, 0, 0]);
+        </script>
+    </body>
+</html>
