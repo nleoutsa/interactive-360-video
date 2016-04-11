@@ -8,3 +8,53 @@
     transform-origin: 0 0;
     z-index: 99;
 }
+
+.cssSphere-axis-controller {
+    position: absolute;
+    transform-style: preserve-3d;
+    user-select: none;
+    font-size: 38px;
+}
+
+.three-d {
+    position: absolute;
+    transform-style: preserve-3d;
+}
+.handle {
+    opacity: 0.5;
+}
+.handle:hover {
+    opacity: 1;
+}
+.side {
+    width: 100px;
+    height: 8px;
+}
+.cap {
+    width: 8px;
+    height: 8px;
+}
+.x-axis-color {
+    background-color: #22F;
+}
+.x-axis-transform {
+    transform: translateX(16px);
+}
+.y-axis-color {
+    background-color: #0f0;
+}
+.y-axis-transform {
+    transform: translateZ(16px) rotateX(90deg) rotateZ(90deg);
+}
+.z-axis-color {
+    background-color: #f00;
+}
+.z-axis-transform {
+    transform: translateX(-8px) translateY(16px) rotateX(90deg) rotateY(90deg)
+}
+
+.scale-knob {
+    transform: translateX(100px) translateY(-11px);
+}
+.scale-knob-side {
+}
