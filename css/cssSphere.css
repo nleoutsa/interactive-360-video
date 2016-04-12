@@ -14,25 +14,27 @@
     transform-style: preserve-3d;
     user-select: none;
     font-size: 38px;
+    cursor: pointer;
 }
 
 .three-d {
     position: absolute;
     transform-style: preserve-3d;
 }
+.controller-handle-side {
+    width: 150px;
+    height: 8px;
+    opacity: 0.3;
+}
 .handle {
-    opacity: 0.5;
+    top: 0;
+    left: 0;
 }
-.handle:hover {
+.handle:hover .controller-handle-side,
+.handle:hover .Translation-knob,
+.handle:hover .Rotation-knob,
+.handle:hover .Scale-knob {
     opacity: 1;
-}
-.side {
-    width: 100px;
-    height: 8px;
-}
-.cap {
-    width: 8px;
-    height: 8px;
 }
 .x-axis-color {
     background-color: #22F;
@@ -53,8 +55,65 @@
     transform: translateX(-8px) translateY(16px) rotateX(90deg) rotateY(90deg)
 }
 
-.scale-knob {
-    transform: translateX(100px) translateY(-11px);
+.Translation-knob {
+    transform: translateX(150px) translateY(-11px);
+    opacity: 0.8;
 }
-.scale-knob-side {
+.Translation-knob-side {
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-top: 16px solid transparent;
+    border-bottom: 16px solid transparent;
+}
+.Translation-knob-side.x-axis-color {
+    border-left: 48px solid #22F;
+    background-color: transparent;
+}
+.Translation-knob-side.y-axis-color {
+    border-left: 48px solid #0f0;
+    background-color: transparent;
+}
+.Translation-knob-side.z-axis-color {
+    border-left: 48px solid #f00;
+    background-color: transparent;
+}
+
+.Rotation-knob.x-axis-color,
+.Rotation-knob.y-axis-color,
+.Rotation-knob.z-axis-color {
+    width: 0;
+    height: 0;
+    position: relative;
+    background-color: transparent;
+    transform: translateX(-16px) translateY(-250px)  translateZ(250px) rotateY(90deg);
+}
+.Rotation-knob.x-axis-color::after,
+.Rotation-knob.y-axis-color::after,
+.Rotation-knob.z-axis-color::after {
+   content: "";
+   position: absolute;
+   width: 500px;
+   height: 500px;
+   z-index: -1;
+   border-bottom: 5px solid blue;
+   border-left: 5px solid blue;
+   border-radius: 100%;
+}
+.Rotation-knob.y-axis-color::after {
+   border-bottom: 5px solid green;
+   border-left: 5px solid green;
+}
+.Rotation-knob.z-axis-color::after {
+   border-bottom: 5px solid red;
+   border-left: 5px solid red;
+}
+
+.Scale-knob {
+    transform: translateX(50px) translateY(-11px);
+    opacity: 0.8;
+}
+.Scale-knob-side {
+    width: 30px;
+    height: 30px;
 }
