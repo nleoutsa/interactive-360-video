@@ -9,14 +9,6 @@
     z-index: 99;
 }
 
-.cssSphere-axis-controller {
-    position: absolute;
-    transform-style: preserve-3d;
-    user-select: none;
-    font-size: 38px;
-    cursor: pointer;
-}
-
 .three-d {
     position: absolute;
     transform-style: preserve-3d;
@@ -30,10 +22,17 @@
     top: 0;
     left: 0;
 }
-.handle:hover .controller-handle-side,
-.handle:hover .Translation-knob,
-.handle:hover .Rotation-knob,
-.handle:hover .Scale-knob {
+.Translation-knob,
+.Rotation-knob,
+.Scale-knob {
+    opacity: 0.3;
+}
+.Translation-knob:hover,
+.Rotation-knob:hover,
+.Scale-knob:hover,
+.Translation-knob.active_knob,
+.Rotation-knob.active_knob,
+.Scale-knob.active_knob  {
     opacity: 1;
 }
 .x-axis-color {
@@ -54,10 +53,8 @@
 .z-axis-transform {
     transform: translateX(-8px) translateY(16px) rotateX(90deg) rotateY(90deg)
 }
-
 .Translation-knob {
-    transform: translateX(150px) translateY(-11px);
-    opacity: 0.8;
+    transform: translateX(150px) translateY(-12px) translateZ(4px);
 }
 .Translation-knob-side {
     width: 0;
@@ -79,14 +76,14 @@
     background-color: transparent;
 }
 
-.Rotation-knob.x-axis-color,
-.Rotation-knob.y-axis-color,
-.Rotation-knob.z-axis-color {
+.Rotation-knob,
+.Rotation-knob,
+.Rotation-knob {
     width: 0;
     height: 0;
     position: relative;
     background-color: transparent;
-    transform: translateX(-16px) translateY(-250px)  translateZ(250px) rotateY(90deg);
+    transform: translateX(-50px) translateY(-250px)  translateZ(250px) rotateY(90deg);
 }
 .Rotation-knob.x-axis-color::after,
 .Rotation-knob.y-axis-color::after,
@@ -96,22 +93,21 @@
    width: 500px;
    height: 500px;
    z-index: -1;
-   border-bottom: 5px solid blue;
-   border-left: 5px solid blue;
+   border-bottom: 50px solid blue;
    border-radius: 100%;
 }
 .Rotation-knob.y-axis-color::after {
-   border-bottom: 5px solid green;
-   border-left: 5px solid green;
+   border-right: 30px solid green;
+   border-bottom: 30px solid green;
+   border-left: none;
 }
 .Rotation-knob.z-axis-color::after {
-   border-bottom: 5px solid red;
-   border-left: 5px solid red;
+   border-left: 15px solid red;
+   border-bottom: none;
 }
 
 .Scale-knob {
     transform: translateX(50px) translateY(-11px);
-    opacity: 0.8;
 }
 .Scale-knob-side {
     width: 30px;

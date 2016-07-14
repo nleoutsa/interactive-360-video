@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Hapyak A-Frame Example</title>
+        <title>CssSphere</title>
+
         <link rel="stylesheet" type="text/css" href="css/cssSphere.css">
         <link rel="stylesheet" type="text/css" href="css/myCss.css">
     </head>
@@ -10,41 +11,45 @@
 
         <div id="cssSphereContainer"></div>
 
-        <form id="formAnnotation">
-            <h1>Form</h1>
-            <label for="first">first:<input name="first"/></label>
-            <label for="last">last:<input name="last"/></label>
-            <label for="email">email:<input name="email"/></label>
-            <button>Submit</button>
-        </form>
-
         <img id="moviePoster" src="images/mummy.jpg">
+        <img id="hyIcon" src="images/hy_icon.png">
 
         <script src="vendor/aframe-0.1.3.js"></script>
         <script type="text/javascript" src="js/cssSphere.js"></script>
 
         <script type="text/javascript">
             var myCssSphere = new CssSphere();
-            myCssSphere.generateScene('images/Venice360.jpeg');
-            myCssSphere.addDOMElementToScene(
-                'moviePoster', // id of DOM element to add
-                [ // array of values for positioning
-                    0, 0, 0,  // global rotation     x, y, z,
-                    0, 0, 0,    // local translation  x, y, z,
-                    0, 0, 0,    // local  rotation     x, y, z,
-                    0, 0, 0     // scale diference     x, y, z
-                ]
-            );
+            myCssSphere.generateScene('videos/paris360.mp4', true, startScene());
 
-            myCssSphere.addDOMElementToScene(
-                'formAnnotation',
-                [
-                    -2.9, 8.5, 0,
-                    -6492, -1927, 0,
-                    0, 0, 0,
-                    0, 0, 0
-                ]
-            );
+            function startScene () {
+                setTimeout(function () {
+                    myCssSphere.addDOMElementToScene(
+                            'moviePoster', // id of DOM element to add
+                            [ // array of values for positioning
+                                0, 0, 0,  // global rotation     x, y, z,
+                                0, 0, 0,    // local translation  x, y, z,
+                                0, -64, 0,    // local  rotation     x, y, z,
+                                2750, 4600, 0     // scale diference     x, y, z
+                            ]
+                    );
+                }, 10);
+
+                setTimeout(function () {
+                    myCssSphere.addDOMElementToScene('hyIcon');
+                }, 10);
+//
+//                setTimeout(function () {
+//                    myCssSphere.addDOMElementToScene(
+//                            'formAnnotation',
+//                            [
+//                                -2.9, 8.5, 0,
+//                                -6492, -1927, 0,
+//                                0, 0, 0,
+//                                0, 0, 0
+//                            ]
+//                    );
+//                }, 10000);
+            }
         </script>
     </body>
 </html>
