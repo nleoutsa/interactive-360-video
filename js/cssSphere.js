@@ -40,6 +40,11 @@ function CssSphere (containerId) {
         aCamera.setAttribute('id', 'cssSphereCamera');
         self.aScene.appendChild(aCamera);
 
+        var videoPlayer = document.createElement('video');
+        videoPlayer.src = src;
+
+        videoPlayer.pause();
+
         sceneBackground = document.createElement('a-sky');
 
         // If video or image is provided, set media source

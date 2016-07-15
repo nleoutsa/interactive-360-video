@@ -11,6 +11,11 @@
 
         <div id="cssSphereContainer"></div>
 
+        <div id="classicVdeoControls">
+            <div id="playButton">Play</div>
+            <div id="pauseButton">Pause</div>
+        </div>
+
         <img id="moviePoster" src="images/mummy.jpg">
         <img id="hyIcon" src="images/hy_icon.png">
 
@@ -19,37 +24,36 @@
 
         <script type="text/javascript">
             var myCssSphere = new CssSphere();
-            myCssSphere.generateScene('videos/paris360.mp4', true, startScene);
+            myCssSphere.generateScene('videos/paris360.mp4', false);
+
+            myCssSphere.addDOMElementToScene(
+                'moviePoster', // id of DOM element to add
+                [ // array of values for positioning
+                    0, 0, 0,  // global rotation     x, y, z,
+                    2750, 4600, 0,    // local translation  x, y, z,
+                    0, -64, 0,    // local  rotation     x, y, z,
+                    0, 0, 0     // scale difference     x, y, z
+                ]
+            );
+
+//            myCssSphere.addDOMElementToScene('hyIcon');
+
+            //
+            //                setTimeout(function () {
+            //                    myCssSphere.addDOMElementToScene(
+            //                            'formAnnotation',
+            //                            [
+            //                                -2.9, 8.5, 0,
+            //                                -6492, -1927, 0,
+            //                                0, 0, 0,
+            //                                0, 0, 0
+            //                            ]
+            //                    );
+            //                }, 10000);
 
             function startScene () {
-                setTimeout(function () {
-                    myCssSphere.addDOMElementToScene(
-                            'moviePoster', // id of DOM element to add
-                            [ // array of values for positioning
-                                0, 0, 0,  // global rotation     x, y, z,
-                                0, 0, 0,    // local translation  x, y, z,
-                                0, -64, 0,    // local  rotation     x, y, z,
-                                2750, 4600, 0     // scale diference     x, y, z
-                            ]
-                    );
-                }, 10);
-
-                setTimeout(function () {
-                    myCssSphere.addDOMElementToScene('hyIcon');
-                }, 10);
-//
-//                setTimeout(function () {
-//                    myCssSphere.addDOMElementToScene(
-//                            'formAnnotation',
-//                            [
-//                                -2.9, 8.5, 0,
-//                                -6492, -1927, 0,
-//                                0, 0, 0,
-//                                0, 0, 0
-//                            ]
-//                    );
-//                }, 10000);
             }
+
         </script>
     </body>
 </html>
