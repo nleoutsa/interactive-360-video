@@ -24,28 +24,20 @@ function CssSphere (containerId) {
     };
 
     this.generateScene = function (src, editMode, callback) {
+        var ext = src.split('.').pop(),
+            aCamera = document.createElement('a-entity'),
+            sceneBackground = document.createElement('a-sky');
+
         self.editMode = !!editMode;
-
-        var ext = src.split('.').pop();
-
-        var sceneBackground;
 
         // Create AFrame scene (sets up THREEjs scene)
         self.aScene = document.createElement('a-scene');
 
         // Create Camera for AFrame scene (this is necessary in order to give camera an id)
-        var aCamera = document.createElement('a-entity');
         aCamera.setAttribute('camera', '');
         aCamera.setAttribute('look-controls', '');
         aCamera.setAttribute('id', 'cssSphereCamera');
         self.aScene.appendChild(aCamera);
-
-        var videoPlayer = document.createElement('video');
-        videoPlayer.src = src;
-
-        videoPlayer.pause();
-
-        sceneBackground = document.createElement('a-sky');
 
         // If video or image is provided, set media source
         if (['mp4', 'jpg', 'jpeg', 'png', 'svg', 'gif', 'tiff'].indexOf(ext) > -1) {
@@ -54,6 +46,7 @@ function CssSphere (containerId) {
         else { // otherwise, user can enter a color
             sceneBackground.setAttribute('color', src || "#fff");
         }
+
         self.aScene.appendChild(sceneBackground);
 
         // create cssSphere div. This will hold all DOM elements in the 3d sphere
@@ -206,6 +199,8 @@ function CssSphereDOMElement (element) {
     local_transform_wrapper.style.position = 'absolute';
     local_transform_wrapper.style.transformStyle = 'preserve-3d';
 
+    element.style.display = 'block';
+
     local_transform_wrapper.appendChild(element);
     global_transform_wrapper.appendChild(local_transform_wrapper);
 
@@ -253,7 +248,7 @@ function CssSphereDOMElement (element) {
         global_transform_controller.style.transform = 'translateX(-600px) translateY(-1700px) scale(3)';
 
         return global_transform_controller;
-    }
+    };
 
     function applyAxisControllerStyles (element) {
         element.style.textAlign = 'center';

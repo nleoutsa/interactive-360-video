@@ -9,6 +9,10 @@
     z-index: 99;
 }
 
+.cssSphereElement {
+    display: none;
+}
+
 .three-d {
     position: absolute;
     transform-style: preserve-3d;

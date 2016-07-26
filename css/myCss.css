@@ -52,11 +52,19 @@
     margin-top: 20px;
 }
 
-#moviePoster {
-    width: 300px;
+.imageLink {
     -webkit-transition: box-shadow 0.3s ease;
     transition: box-shadow 0.3s ease;
 }
-#moviePoster:hover {
+.imageLink:hover {
     box-shadow: 0 0 30px white;
+}
+#mummy {
+    width: 300px;
+}
+#rebelWithoutACause {
+    width: 300px;
+}
+#breakfastAtTiffanys {
+    width: 300px;
 }
