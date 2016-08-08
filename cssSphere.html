@@ -55,10 +55,8 @@
             myCssSphere.generateScene(sceneOptions, startScene);
 
             function startScene () {
-                var playStartedAt = Date.now();
-
                 window.addEventListener('click', function () {
-                    console.log((Date.now() - playStartedAt) / 1000.0);
+                    console.log(myCssSphere.videoElement.currentTime);
                 });
 
                 myCssSphere.addDOMElementToScene({
@@ -69,71 +67,76 @@
                         0, -64, 0, // local  rotation x, y, z,
                         0, 0, 0 // scale difference x, y, z
                     ],
-                    'end': 56000
+                    'start': 0,
+                    'end': 54000
                 });
 
                 myCssSphere.addDOMElementToScene({
                     'id': 'instructions',
-                    'transform': [-28.41870663848885, 7.563042895726874, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    'transform': [-28.41870663848885, 7.563042895726874, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 0,
+                    'end': 56
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'dummyWrapper',
-                    'transform': [0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    'transform': [0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 0,
+                    'end': 99999999
                 });
 
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotMontMarte',
                     'transform': [7.448451336700707, 117.20259708588736, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 35000,
-                    'end': 54000
+                    'start': 35,
+                    'end': 54
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotSacreCouer',
                     'transform': [-33.00236899953543, 152.84057194302432, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 41000,
-                    'end': 54000
+                    'start': 41,
+                    'end': 54
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotOperaGarnier',
                     'transform': [-14.896902673401398, 123.04676659622154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 62000,
-                    'end': 85000
+                    'start': 62,
+                    'end': 85
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotEiffel',
                     'transform': [0, -25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 56000,
-                    'end': 85000
+                    'start': 56,
+                    'end': 85
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotPlaceDuConcorde',
                     'transform': [6.646310423517561, 420.70369344964183, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 56000,
-                    'end': 85000
+                    'start': 56,
+                    'end': 85
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotLafayetteGallery',
                     'transform': [-6.187944187412886, 233.69026911894161, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 62000,
-                    'end': 85000
+                    'start': 62,
+                    'end': 85
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotVendomeSquare',
                     'transform': [13.063437728982795, 544.3999291354271, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 100000,
-                    'end': 130000
+                    'start': 100,
+                    'end': 130
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotPontsDuArts',
                     'transform': [12.146705256773476, 654.0640511234668, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 170000,
-                    'end': 230000
+                    'start': 170,
+                    'end': 230
                 });
                 myCssSphere.addDOMElementToScene({
                     'id': 'hotspotEiffel2',
                     'transform': [-18.793015680290992, 832.8268832042838, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    'start': 230000,
-                    'end': 270000
+                    'start': 230,
+                    'end': 270
                 });
             }
         </script>

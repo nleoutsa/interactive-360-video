@@ -7,13 +7,11 @@
 
 function CssSphere (containerId) {
     var self = this;
-    //
-    this.sphere = document.getElementById('cssSphere');
 
     this.container = document.getElementById(containerId || 'cssSphereContainer');
 
     this.perspective = function () {
-        // TODO:
+        // TODO: find more accurate way to calculate perspective;
         return (self.sceneHeight / 2) + (self.sceneHeight / 8) + (self.sceneHeight / 32) + (self.sceneHeight / 128);
     };
 
@@ -98,7 +96,6 @@ function CssSphere (containerId) {
 
             sceneBackground = document.createElement('a-videosphere');
             sceneBackground.setAttribute('src', '#video_1');
-            sceneBackground.setAttribute('rotation', '0 180 0');
         } else if (['mp4', 'jpg', 'jpeg', 'png', 'svg', 'gif', 'tiff'].indexOf(ext) > -1) {
             // If options.controls is NOT TRUE, but the src is still an mp4, simply treat it like an image.
             // This will take care of autoplaying it and limit the number of created elements.
@@ -136,11 +133,11 @@ function CssSphere (containerId) {
         self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
 
         // called to add DOM elements of a specific class to the scene. IN PROGRESS
-        self.addDOMElementsFromClass();
+        // self.addDOMElementsFromClass();
 
         window.onload = function () {
             self.sceneHeight = self.aScene.canvas.clientHeight;
-            self.rotate(0);
+            self.updateSphere(0);
         };
 
         // fire callback if one is provided
@@ -153,69 +150,90 @@ function CssSphere (containerId) {
         }
     };
 
-    this.visibleDOMElements = [];
+    this.addedDOMElements = [];
 
     this.addDOMElementToScene = function (options) {
-        var elementId = options.id;
-        var transform = options.transform;
-        var start = options.start || 0;
-        var end = options.end;
+        // Get the DOM element
+        var dom_element = document.getElementById(options.id);
 
-        setTimeout(function () {
-            var dom_element = document.getElementById(elementId);
-            var css_sphere_dom_element = new CssSphereDOMElement(dom_element);
-            self.addElementToScene(css_sphere_dom_element, transform);
+        // Create a css_sphere_dom_element from the original.
+        var css_sphere_dom_element = new CssSphereDOMElement(dom_element);
 
-            if (end) {
-                setTimeout(function () {
-                    self.removeElementFromScene(css_sphere_dom_element);
-                }, end- start);
-            }
-        }, start);
+        // Set options on the element object.
+        css_sphere_dom_element.options = options;
+
+        // Keep track of all 360 elements in scene.
+        self.addedDOMElements.push(css_sphere_dom_element);
+
+        // Element is not visible until it is told to be.
+        css_sphere_dom_element.currentlyVisible = false;
     };
-    this.addDOMElementsFromClass = function (classname) {
-        var dom_elements = document.getElementsByClassName(classname);
 
-        var i,
-            css_sphere_dom_element;
+    /*
+    *   Add all elements from a certain class. Incomplete. How will these be positioned?
+    */
+    // this.addDOMElementsFromClass = function (classname) {
+    //     var dom_elements = document.getElementsByClassName(classname);
+    //
+    //     var i,
+    //         css_sphere_dom_element;
+    //
+    //     for (i = 0; i < dom_elements.length; i++) {
+    //         css_sphere_dom_element = new CssSphereDOMElement(dom_elements[i]);
+    //         self.addElementToScene(css_sphere_dom_element);
+    //     }
+    // };
 
-        for (i = 0; i < dom_elements.length; i++) {
-            css_sphere_dom_element = new CssSphereDOMElement(dom_elements[i]);
-            self.addElementToScene(css_sphere_dom_element);
-        }
-    };
     this.addElementToScene = function (css_sphere_dom_element, transformArray) {
         css_sphere_dom_element.parentSphere = self;
         if (self.editMode) {
             css_sphere_dom_element.setupControllers();
         }
         css_sphere_dom_element.setPositionFromArray(transformArray || [0,0,0,0,0,0,0,0,0,0,0,0]);
+        css_sphere_dom_element.currentlyVisible = true;
         self.sphere.appendChild(css_sphere_dom_element.el());
-        self.visibleDOMElements.push(css_sphere_dom_element);
     };
+
     this.removeElementFromScene = function (css_sphere_dom_element) {
+        css_sphere_dom_element.currentlyVisible = false;
         self.sphere.removeChild(css_sphere_dom_element.el());
     };
 
-    this.rotate = function (cycle) {
+    this.updateSphere = function (cycle) {
         window.requestAnimationFrame(function () {
             var rotation = self.rotation();
+            var currentTime = self.videoElement.currentTime;
             var activeDOMElement;
             var i;
 
+            // Rotate CSS Sphere.
             self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotation.x + 'deg) rotateY(' + -rotation.y + 'deg)';
 
-            for (i = 0; i < self.visibleDOMElements.length; i++) {
-                activeDOMElement = self.visibleDOMElements[i];
-                if (activeDOMElement.activeGlobalRotationControllers.x) {
-                    activeDOMElement.updateGlobalRotation('x', -rotation.x + -activeDOMElement.startingRotation.x);
-                }
-                if (activeDOMElement.activeGlobalRotationControllers.y) {
-                    activeDOMElement.updateGlobalRotation('y', rotation.y + activeDOMElement.startingRotation.y);
+            // Update annotations
+            for (i = 0; i < self.addedDOMElements.length; i++) {
+                activeDOMElement = self.addedDOMElements[i];
+
+                if (activeDOMElement.options.start <= currentTime && activeDOMElement.options.end > currentTime) {
+                    // Add element to scene if it isn't already visible.
+                    if (activeDOMElement.currentlyVisible === false) {
+                        self.addElementToScene(activeDOMElement, activeDOMElement.options.transform);
+                    }
+
+                    // Handle 'global rotation' controllers that are toggled on.
+                    if (activeDOMElement.activeGlobalRotationControllers.x) {
+                        activeDOMElement.updateGlobalRotation('x', -rotation.x + -activeDOMElement.startingRotation.x);
+                    }
+                    if (activeDOMElement.activeGlobalRotationControllers.y) {
+                        activeDOMElement.updateGlobalRotation('y', rotation.y + activeDOMElement.startingRotation.y);
+                    }
+                } else {
+                    if (activeDOMElement.currentlyVisible === true) {
+                        self.removeElementFromScene(activeDOMElement);
+                    }
                 }
             }
 
-            self.rotate(cycle + 1);
+            self.updateSphere(cycle + 1);
         });
     };
 }
