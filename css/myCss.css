@@ -1,3 +1,7 @@
+canvas.a-canvas {
+    cursor: move;
+}
+
 #chapterMenu {
     position: fixed;
     top: 0;
@@ -36,6 +40,14 @@
 }
 #instructions div {
     margin: 20px;
+}
+
+#connectForm {
+    height: 920px;
+    width: 750px;
+    -webkit-border-radius:;
+    -moz-border-radius:;
+    border-radius: 100px;
 }
 
 .hotspot,
@@ -89,8 +101,11 @@
 }
 
 /* Scene 3 */
-#hotspotLafayetteGallery {
+#hotspotVendomeColumn {
     width: 518px;
+}
+#hotspotVendomeSquare {
+    width: 490px;
 }
 #hotspot28Hotels {
     width: 424px;
@@ -103,6 +118,21 @@
 }
 
 /* Scene 4 */
+#hotspotTuileriesGarden {
+    width: 510px;
+}
+#hotspotGreatWheel {
+    width: 454px;
+}
+#hotspotLouvre1 {
+    width: 442px;
+    height: 200px;
+    border: 1px solid #333;
+}
+#hotspotLouvre1:hover {
+    border: 1px solid plum;
+    box-shadow: 0 0 50px 15px plum;
+}
 
 /* Scene 5 */
 #rebelWithoutACause {
@@ -117,12 +147,44 @@
     width: 270px;
     opacity: 0.7;
 }
-
 #hotspotBateauxMouches {
     width: 460px;
     height: 245px;
 }
+#hotspotRiverSeine {
+    width: 363px;
+}
 
 /* Scene 6 */
+#hotspotPontsDuArts {
+    width: 568px;
+}
+#arrow,
+#arrow2 {
+    width: 2000px;
+}
+#hotspotEiffel2 {
+    width: 337px;
+    height: 139px;
+}
+#hotspotIleDeLACitee {
+    width: 411px;
+    height: 240px;
+}
 
 /* Scene 7 */
+#hotspotPlaceDeLaConcorde {
+    width: 550px;
+}
+#hotspotChampsElysees {
+    width: 485px;
+    height: 232px;
+}
+#hotspotObeliskOfLuxor {
+    width: 455px;
+}
+
+/* Scene 8 */
+#hotspotEiffel3 {
+    width: 550px;
+}

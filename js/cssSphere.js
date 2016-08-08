@@ -80,12 +80,14 @@ function CssSphere (containerId) {
             playButton.style.bottom = 0;
             playButton.style.padding = '5px';
             playButton.style.borderRight = '2px solid #fff';
+            playButton.style.cursor = 'pointer';
 
             progressBar.style.position = 'absolute';
             progressBar.style.right = 0;
             progressBar.style.left = '32px';
             progressBar.style.top = 0;
             progressBar.style.bottom = 0;
+            progressBar.style.cursor = 'pointer';
 
             progress.style.position = 'absolute';
             progress.style.right = '100%';
@@ -100,6 +102,7 @@ function CssSphere (containerId) {
             time.style.lineHeight = '30px';
             time.style.color = '#fff';
             time.innerHTML = 0.00;
+            time.style.userSelect = 'none';
 
             self.progressElement = progress;
             self.progressTime = time;
@@ -315,7 +318,7 @@ function CssSphere (containerId) {
             // Update progress bar if present
             if (self.progressElement) {
                 self.progressElement.style.right = 100 - ((100 * currentTime / self.videoElement.duration)) + '%';
-                self.progressTime.innerHTML = currentTime;
+                self.progressTime.innerHTML = currentTime.toFixed(2) + ' / ' + self.videoElement.duration.toFixed(2);
             }
 
             // Update annotations
