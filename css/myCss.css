@@ -24,7 +24,7 @@
     transition: box-shadow 0.3s ease;
 }
 #imageAnnotation:hover {
-    box-shadow: 0 0 30px white;
+    box-shadow: 0 0 50px 15px #fff;
 }
 
 #formAnnotation {
@@ -52,12 +52,24 @@
     margin-top: 20px;
 }
 
-.imageLink {
-    -webkit-transition: box-shadow 0.3s ease;
-    transition: box-shadow 0.3s ease;
+#instructions {
+    text-align: center;
+    padding: 50px;
+    background-color: #fff;
+    width: 700px;
+    font-size: 2em;
+    border-radius: 100px;
 }
-.imageLink:hover {
-    box-shadow: 0 0 30px white;
+#instructions div {
+    margin: 20px;
+}
+
+.imageLink {
+    -webkit-transition: 0.2s box-shadow 0.2s ease, border 0.2s ease;
+    transition: 0.2s box-shadow 0.2s ease, border 0.2s ease;
+}
+#hapyak-icon {
+    width: 300px;
 }
 #mummy {
     width: 300px;
@@ -67,4 +79,26 @@
 }
 #breakfastAtTiffanys {
     width: 300px;
+}
+
+#hotspotInitial {
+    width: 300px;
+    height: 300px;
+}
+.hotspot {
+    width: 300px;
+    height: 300px;
+    -webkit-transition: 0.2s box-shadow 0.2s ease;
+    transition: 0.2s box-shadow 0.2s ease;
+}
+.hotspot:hover,
+.imageLink:hover {
+    box-shadow: 0 0 50px 15px #fff;
+    border: 5px solid #fff;
+}
+
+#dummyWrapper {
+    border: 5px dotted deeppink;
+    width: 300px;
+    height: 300px;
 }

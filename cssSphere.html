@@ -6,55 +6,136 @@
 
         <link rel="stylesheet" type="text/css" href="css/cssSphere.css">
         <link rel="stylesheet" type="text/css" href="css/myCss.css">
+
+        <!-- Vendor files-->
+        <script src="vendor/aframe-0.2.0.js"></script>
+        <script src="vendor/aframe-video-controls.js"></script>
     </head>
     <body>
-
         <div id="cssSphereContainer"></div>
 
-        <a class="cssSphereElement imageLink" id="mummyWrapper" href="//en.wikipedia.org/wiki/The_Mummy_(1932_film)"><img id="mummy" src="images/mummy.jpg"></a>
-        <a class="cssSphereElement imageLink" id="rebelWithoutACauseWrapper" href="//en.wikipedia.org/wiki/Rebel_Without_a_Cause"><img id="rebelWithoutACause" src="images/rebelWithoutACause.jpg"></a>
-        <a class="cssSphereElement imageLink" id="breakfastAtTiffanysWrapper" href="//en.wikipedia.org/wiki/Breakfast_at_Tiffany%27s_(film)"><img id="breakfastAtTiffanys" src="images/breakfastAtTiffanys.jpg"></a>
+        <div id="instructions">
+            <h1>Welcome to HapYak's Interactive 360 Video Demo!</h1>
+            <div>Look around.</div>
+            <div>Notice there are <strong>interactable DOM elements</strong> overlayed on the video.</div>
+            <div>You can click elements, navigate to links, even fill out forms <strong>all inside a 360 video!</strong></div>
+        </div>
 
-        <script src="vendor/aframe-0.1.3.js"></script>
+        <a class="cssSphereElement imageLink" id="mummyWrapper" href="//en.wikipedia.org/wiki/The_Mummy_(1932_film)" target="_blank"><img id="mummy" src="images/mummy.jpg"></a>
+        <a class="cssSphereElement imageLink" id="rebelWithoutACauseWrapper" href="//en.wikipedia.org/wiki/Rebel_Without_a_Cause" target="_blank"><img id="rebelWithoutACause" src="images/rebelWithoutACause.jpg"></a>
+        <a class="cssSphereElement imageLink" id="breakfastAtTiffanysWrapper" href="//en.wikipedia.org/wiki/Breakfast_at_Tiffany%27s_(film)" target="_blank"><img id="breakfastAtTiffanys" src="images/breakfastAtTiffanys.jpg"></a>
+
+        <div class="cssSphereElement" id="dummyWrapper"></div>
+
+        <a class="cssSphereElement hotspot" id="hotspotInitial" href="//hapyak.com" target="_blank"></a>
+
+        <a class="cssSphereElement hotspot" id="hotspotMontMarte" href="//montmarte.com" target="_blank">Mont Marte</a>
+        <a class="cssSphereElement hotspot" id="hotspotSacreCouer" href="//sacrecouer.com" target="_blank">Sacre Coeur</a>
+        <a class="cssSphereElement hotspot" id="hotspotEiffel" href="//eiffeltower.com" target="_blank">Eiffel 1</a>
+        <a class="cssSphereElement hotspot" id="hotspotOperaGarnier" href="//operaGarnier.com" target="_blank">Opera Garnier</a>
+        <a class="cssSphereElement hotspot" id="hotspotVendomeSquare" href="//operaGarnier.com" target="_blank">Vendome Square</a>
+
+        <a class="cssSphereElement hotspot" id="hotspotPlaceDuConcorde" href="//operaGarnier.com" target="_blank">Place Du Concorde</a>
+        <a class="cssSphereElement hotspot" id="hotspotLafayetteGallery" href="//operaGarnier.com" target="_blank">Lafayette Gallery</a>
+        <a class="cssSphereElement hotspot" id="hotspotPontsDuArts" href="//operaGarnier.com" target="_blank">Ponts du Arts</a>
+        <a class="cssSphereElement hotspot" id="hotspotEiffel2" href="//operaGarnier.com" target="_blank">Eiffel 2</a>
+
         <script type="text/javascript" src="js/cssSphere.js"></script>
 
         <script type="text/javascript">
             var myCssSphere = new CssSphere();
             var src = 'videos/paris360.mp4';
-            myCssSphere.generateScene(src, true, startScene);
+
+            var sceneOptions = {
+                'src': 'videos/paris360.mp4',
+                'editMode': true,
+                'controls': true
+            };
+
+            myCssSphere.generateScene(sceneOptions, startScene);
 
             function startScene () {
-                myCssSphere.addDOMElementToScene(
-                        'mummyWrapper', // id of DOM element to add
-                        [ // array of values for positioning
-                            0, 0, 0,            // global rotation     x, y, z,
-                            2750, 4600, 0,      // local translation   x, y, z,
-                            0, -64, 0,          // local  rotation     x, y, z,
-                            0, 0, 0             // scale difference    x, y, z
-                        ]
-                );
+                var playStartedAt = Date.now();
 
-                myCssSphere.addDOMElementToScene(
-                    'rebelWithoutACauseWrapper',
-                    [
-                        0, 0, 0,            // global rotation     x, y, z,
-                        0, 0, 0,      // local translation   x, y, z,
-                        0, 0, 0,          // local  rotation     x, y, z,
-                        0, 0, 0             // scale difference    x, y, z
-                    ]
-                );
+                window.addEventListener('click', function () {
+                    console.log((Date.now() - playStartedAt) / 1000.0);
+                });
 
-                myCssSphere.addDOMElementToScene(
-                        'breakfastAtTiffanysWrapper',
-                        [
-                            10, 0, 0,            // global rotation     x, y, z,
-                            0, 0, 0,      // local translation   x, y, z,
-                            0, 0, 0,          // local  rotation     x, y, z,
-                            0, 0, 0             // scale difference    x, y, z
-                        ]
-                );
+                myCssSphere.addDOMElementToScene({
+                    'id': 'mummyWrapper', // id of DOM element to add
+                    'transform': [ // array of values for positioning
+                        0, 0, 0, // global rotation x, y, z,
+                        2750, 4600, 0, // local translation x, y, z,
+                        0, -64, 0, // local  rotation x, y, z,
+                        0, 0, 0 // scale difference x, y, z
+                    ],
+                    'end': 56000
+                });
+
+                myCssSphere.addDOMElementToScene({
+                    'id': 'instructions',
+                    'transform': [-28.41870663848885, 7.563042895726874, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'dummyWrapper',
+                    'transform': [0, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                });
+
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotMontMarte',
+                    'transform': [7.448451336700707, 117.20259708588736, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 35000,
+                    'end': 54000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotSacreCouer',
+                    'transform': [-33.00236899953543, 152.84057194302432, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 41000,
+                    'end': 54000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotOperaGarnier',
+                    'transform': [-14.896902673401398, 123.04676659622154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 62000,
+                    'end': 85000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotEiffel',
+                    'transform': [0, -25, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 56000,
+                    'end': 85000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotPlaceDuConcorde',
+                    'transform': [6.646310423517561, 420.70369344964183, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 56000,
+                    'end': 85000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotLafayetteGallery',
+                    'transform': [-6.187944187412886, 233.69026911894161, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 62000,
+                    'end': 85000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotVendomeSquare',
+                    'transform': [13.063437728982795, 544.3999291354271, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 100000,
+                    'end': 130000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotPontsDuArts',
+                    'transform': [12.146705256773476, 654.0640511234668, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 170000,
+                    'end': 230000
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotEiffel2',
+                    'transform': [-18.793015680290992, 832.8268832042838, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 230000,
+                    'end': 270000
+                });
             }
-
         </script>
     </body>
 </html>

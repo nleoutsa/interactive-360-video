@@ -7,7 +7,7 @@
 
 function CssSphere (containerId) {
     var self = this;
-
+    //
     this.sphere = document.getElementById('cssSphere');
 
     this.container = document.getElementById(containerId || 'cssSphereContainer');
@@ -18,64 +18,160 @@ function CssSphere (containerId) {
     };
 
     this.rotation = function () {
-        var camera = document.getElementById('cssSphereCamera');
-
-        return camera.components.rotation.data;
+        return self.camera.components.rotation.data;
     };
 
-    this.generateScene = function (src, editMode, callback) {
-        var ext = src.split('.').pop(),
-            aCamera = document.createElement('a-entity'),
-            sceneBackground = document.createElement('a-sky');
+    /*
+    *   generateScene(options, callback)
+    *
+    *   PARAMS
+    *   options: {
+    *       src: STRING,
+    *       controls: BOOLEAN,
+    *       editMode: BOOLEAN
+    *   },
+    *   callback: FUNCTION
+    */
+    this.generateScene = function (options, callback) {
+        if (!options || typeof options !== 'object') {
+            console.warn('Must provide options object.');
+            return;
+        }
 
-        self.editMode = !!editMode;
+        var ext,
+            aCamera,
+            sceneBackground,
+            aAssets,
+            playButton,
+            pauseButton,
+            videoSource,
+            aCursor,
+            videoControls;
+
+        // Get source extension
+        if (options.src && typeof options.src === 'string') {
+            ext = options.src.split('.').pop();
+        }
+
+        // Establish which mode we are in: "Edit" or "View" - determines whether positioning
+        // controls will be created for elements.
+        self.editMode = !!options.editMode;
 
         // Create AFrame scene (sets up THREEjs scene)
         self.aScene = document.createElement('a-scene');
 
+        // If video provided create videosphere
+        if ('mp4'.indexOf(ext) > -1 && options.controls) {
+            // setup controls and video source stuff
+            aAssets = document.createElement('a-assets');
+
+            playButton = document.createElement('img');
+            playButton.setAttribute('id', 'video-play-image');
+            playButton.setAttribute('src', 'images/play.png');
+
+            pauseButton = document.createElement('img');
+            pauseButton.setAttribute('id', 'video-pause-image');
+            pauseButton.setAttribute('src', 'images/pause.png');
+
+            // Must create an actual video element for the video controls to
+            // get access to video timing info/play-pause controls.
+            videoSource = document.createElement('video');
+            videoSource.setAttribute('id', 'video_1');
+            videoSource.setAttribute('src', options.src);
+            self.videoElement = videoSource;
+
+            // Cursor allows us to interact with aframe entity controls
+            aCursor = document.createElement('a-cursor');
+            aCursor.setAttribute('id', 'cursor');
+            aCursor.setAttribute('material', 'color: cyan;');
+
+            videoControls = document.createElement('a-entity');
+            videoControls.setAttribute('video-controls', 'src:#video_1');
+            videoControls.setAttribute('position', '0 0 -2');
+
+            aAssets.appendChild(playButton);
+            aAssets.appendChild(pauseButton);
+            aAssets.appendChild(videoSource);
+
+            self.aScene.appendChild(aAssets);
+            self.aScene.appendChild(videoControls);
+
+            sceneBackground = document.createElement('a-videosphere');
+            sceneBackground.setAttribute('src', '#video_1');
+            sceneBackground.setAttribute('rotation', '0 180 0');
+        } else if (['mp4', 'jpg', 'jpeg', 'png', 'svg', 'gif', 'tiff'].indexOf(ext) > -1) {
+            // If options.controls is NOT TRUE, but the src is still an mp4, simply treat it like an image.
+            // This will take care of autoplaying it and limit the number of created elements.
+            sceneBackground = document.createElement('a-sky');
+            sceneBackground.setAttribute('src', options.src);
+        } else {
+            // Otherwise, user can enter a color
+            sceneBackground = document.createElement('a-sky');
+            sceneBackground.setAttribute('color', options.src || "#fff");
+        }
+
         // Create Camera for AFrame scene (this is necessary in order to give camera an id)
+        aCamera = document.createElement('a-entity');
         aCamera.setAttribute('camera', '');
         aCamera.setAttribute('look-controls', '');
-        aCamera.setAttribute('id', 'cssSphereCamera');
+
+        self.camera = aCamera;
+
+        if (aCursor) {
+            aCamera.appendChild(aCursor);
+        }
+
         self.aScene.appendChild(aCamera);
-
-        // If video or image is provided, set media source
-        if (['mp4', 'jpg', 'jpeg', 'png', 'svg', 'gif', 'tiff'].indexOf(ext) > -1) {
-            sceneBackground.setAttribute('src', src);
-        }
-        else { // otherwise, user can enter a color
-            sceneBackground.setAttribute('color', src || "#fff");
-        }
-
         self.aScene.appendChild(sceneBackground);
 
-        // create cssSphere div. This will hold all DOM elements in the 3d sphere
+        // Create cssSphere div. This will hold all DOM elements in the 3d sphere
         self.sphere = document.createElement('div');
         self.sphere.setAttribute('id', 'cssSphere');
 
-        // Add scene to DOM
+        // Add scene and sphere to DOM
         self.container.appendChild(self.aScene);
         self.container.appendChild(self.sphere);
+
+        // Set perspective: this must be accurate to maintain positioning as video warps.
         self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
 
+        // called to add DOM elements of a specific class to the scene. IN PROGRESS
         self.addDOMElementsFromClass();
 
-        window.addEventListener("loaded", function (e, t) {
+        window.onload = function () {
             self.sceneHeight = self.aScene.canvas.clientHeight;
             self.rotate(0);
-        });
+        };
 
-        if (callback && typeof callback === 'function') {
+        // fire callback if one is provided
+        if (callback) {
+            if (typeof callback !== 'function') {
+                console.warn('typeof callback parameter [' + callback + '] is [' + (typeof callback) + ']. It should be a function.');
+                return;
+            }
             callback();
         }
     };
 
     this.visibleDOMElements = [];
 
-    this.addDOMElementToScene = function (elementId, transformArray) {
-        var dom_element = document.getElementById(elementId);
-        var css_sphere_dom_element = new CssSphereDOMElement(dom_element);
-        self.addElementToScene(css_sphere_dom_element, transformArray);
+    this.addDOMElementToScene = function (options) {
+        var elementId = options.id;
+        var transform = options.transform;
+        var start = options.start || 0;
+        var end = options.end;
+
+        setTimeout(function () {
+            var dom_element = document.getElementById(elementId);
+            var css_sphere_dom_element = new CssSphereDOMElement(dom_element);
+            self.addElementToScene(css_sphere_dom_element, transform);
+
+            if (end) {
+                setTimeout(function () {
+                    self.removeElementFromScene(css_sphere_dom_element);
+                }, end- start);
+            }
+        }, start);
     };
     this.addDOMElementsFromClass = function (classname) {
         var dom_elements = document.getElementsByClassName(classname);
@@ -96,6 +192,9 @@ function CssSphere (containerId) {
         css_sphere_dom_element.setPositionFromArray(transformArray || [0,0,0,0,0,0,0,0,0,0,0,0]);
         self.sphere.appendChild(css_sphere_dom_element.el());
         self.visibleDOMElements.push(css_sphere_dom_element);
+    };
+    this.removeElementFromScene = function (css_sphere_dom_element) {
+        self.sphere.removeChild(css_sphere_dom_element.el());
     };
 
     this.rotate = function (cycle) {
@@ -538,7 +637,11 @@ function CssSphereDOMElement (element) {
 
         global_transform_wrapper.style.transform = global_transform;
         local_transform_wrapper.style.transform = local_transform;
-    }
+
+        if (Date.now() % 60 === 0) {
+            console.log('\n\n***\n**\n*\n\n', this.getArrayFromPosition(this.transforms), '\n\n=======\n\n');
+        }
+    };
 
     this.setPositionFromArray = function (transform_array) {
         var axes = self.axes;
