@@ -58,6 +58,73 @@ function CssSphere (containerId) {
         // Create AFrame scene (sets up THREEjs scene)
         self.aScene = document.createElement('a-scene');
 
+        // Setup DOM style clickable controls
+        function createDOMStyleVideoControls () {
+            var vidControls = document.createElement('div'),
+                progressBar = document.createElement('div'),
+                progress = document.createElement('div'),
+                time = document.createElement('div');
+
+            vidControls.style.position = 'fixed';
+            vidControls.style.right = 0;
+            vidControls.style.left = 0;
+            vidControls.style.bottom = 0;
+            vidControls.style.height = '30px';
+            vidControls.style.borderTop = '2px solid #fff';
+            vidControls.style.zIndex = 999999999;
+
+            playButton.style.position = 'absolute';
+            playButton.style.left = 0;
+            playButton.style.width = '20px';
+            playButton.style.top = 0;
+            playButton.style.bottom = 0;
+            playButton.style.padding = '5px';
+            playButton.style.borderRight = '2px solid #fff';
+
+            progressBar.style.position = 'absolute';
+            progressBar.style.right = 0;
+            progressBar.style.left = '32px';
+            progressBar.style.top = 0;
+            progressBar.style.bottom = 0;
+
+            progress.style.position = 'absolute';
+            progress.style.right = '100%';
+            progress.style.left = 0;
+            progress.style.top = 0;
+            progress.style.bottom = 0;
+            progress.style.backgroundColor = '#962312';
+
+            time.style.position = 'absolute';
+            time.style.left = '10px';
+            time.style.height = '30px';
+            time.style.lineHeight = '30px';
+            time.style.color = '#fff';
+            time.innerHTML = 0.00;
+
+            self.progressElement = progress;
+            self.progressTime = time;
+
+            playButton.addEventListener('click', function () {
+                if (self.videoElement.currentTime > 0 && !self.videoElement.paused && !self.videoElement.ended) {
+                    self.videoElement.pause();
+                } else {
+                    self.videoElement.play();
+                }
+                updatePlayButton();
+            });
+
+            progressBar.addEventListener('click', function (e) {
+                self.videoElement.currentTime = self.videoElement.duration * e.offsetX / this.clientWidth;
+            });
+
+            vidControls.appendChild(playButton);
+            progressBar.appendChild(progress);
+            progressBar.appendChild(time);
+            vidControls.appendChild(progressBar);
+
+            return vidControls;
+        }
+
         // If video provided create videosphere
         if ('mp4'.indexOf(ext) > -1 && options.controls) {
             // setup controls and video source stuff
@@ -78,21 +145,37 @@ function CssSphere (containerId) {
             videoSource.setAttribute('src', options.src);
             self.videoElement = videoSource;
 
-            // Cursor allows us to interact with aframe entity controls
-            aCursor = document.createElement('a-cursor');
-            aCursor.setAttribute('id', 'cursor');
-            aCursor.setAttribute('material', 'color: cyan;');
-
             videoControls = document.createElement('a-entity');
             videoControls.setAttribute('video-controls', 'src:#video_1');
-            videoControls.setAttribute('position', '0 0 -2');
 
             aAssets.appendChild(playButton);
             aAssets.appendChild(pauseButton);
             aAssets.appendChild(videoSource);
 
-            self.aScene.appendChild(aAssets);
+            if (options.controlsType === 'aframe') {
+                // Cursor allows us to interact with aframe entity controls
+                aCursor = document.createElement('a-cursor');
+                aCursor.setAttribute('id', 'cursor');
+                aCursor.setAttribute('material', 'color: cyan;');
+
+                videoControls.setAttribute('position', '0 0 -2');
+            }
+
             self.aScene.appendChild(videoControls);
+
+            if (options.controlsType !== 'aframe') {
+                self.container.appendChild(createDOMStyleVideoControls());
+                window.addEventListener('keyup', function(event) {
+                    switch (event.keyCode) {
+                        // If space bar is pressed, fire click on playButton
+                        case 32:
+                            updatePlayButton();
+                            break;
+                    }
+                }, false);
+            }
+
+            self.aScene.appendChild(aAssets);
 
             sceneBackground = document.createElement('a-videosphere');
             sceneBackground.setAttribute('src', '#video_1');
@@ -148,6 +231,26 @@ function CssSphere (containerId) {
             }
             callback();
         }
+    };
+
+    // Keep playButton state
+    function updatePlayButton () {
+        requestAnimationFrame(function () {
+            var playButton = document.getElementById('video-play-image');
+
+            if (self.videoElement.currentTime > 0 && !self.videoElement.paused && !self.videoElement.ended) {
+                playButton.setAttribute('src', 'images/pause.png');
+            } else {
+                playButton.setAttribute('src', 'images/play.png');
+            }
+        });
+    }
+
+    // Jump to video time in seconds.
+    this.seekToTime = function (seconds) {
+        self.videoElement.currentTime = seconds;
+        self.videoElement.play();
+        updatePlayButton();
     };
 
     this.addedDOMElements = [];
@@ -209,14 +312,25 @@ function CssSphere (containerId) {
             // Rotate CSS Sphere.
             self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotation.x + 'deg) rotateY(' + -rotation.y + 'deg)';
 
+            // Update progress bar if present
+            if (self.progressElement) {
+                self.progressElement.style.right = 100 - ((100 * currentTime / self.videoElement.duration)) + '%';
+                self.progressTime.innerHTML = currentTime;
+            }
+
             // Update annotations
             for (i = 0; i < self.addedDOMElements.length; i++) {
                 activeDOMElement = self.addedDOMElements[i];
 
-                if (activeDOMElement.options.start <= currentTime && activeDOMElement.options.end > currentTime) {
+                if (activeDOMElement.options.start <= currentTime && activeDOMElement.options.end >= currentTime) {
                     // Add element to scene if it isn't already visible.
                     if (activeDOMElement.currentlyVisible === false) {
                         self.addElementToScene(activeDOMElement, activeDOMElement.options.transform);
+                    }
+
+                    // Handle simple animations
+                    if (activeDOMElement.options.animationEnd) {
+                        updateAnimation(activeDOMElement, currentTime);
                     }
 
                     // Handle 'global rotation' controllers that are toggled on.
@@ -236,6 +350,25 @@ function CssSphere (containerId) {
             self.updateSphere(cycle + 1);
         });
     };
+
+    function updateAnimation (animatedElement, currentTime) {
+        // currently only handles changes to an elements Global Rotation values between two points.
+        var startTransform = animatedElement.options.transform;
+        var endTransform = animatedElement.options.animationEnd;
+        var startTime = animatedElement.options.start;
+        var endTime = animatedElement.options.end;
+
+        var animationDuration = endTime - startTime;
+        var decimalComplete = (currentTime - startTime) / animationDuration;
+
+        var distanceY = endTransform[1] - startTransform[1];
+        var rotationTraveledY = decimalComplete * distanceY;
+        animatedElement.updateGlobalRotation('y', startTransform[1] + rotationTraveledY);
+
+        var distanceX = endTransform[0] - startTransform[0];
+        var rotationTraveledX = decimalComplete * distanceX;
+        animatedElement.updateGlobalRotation('x', startTransform[0] + rotationTraveledX);
+    }
 }
 
 
@@ -657,7 +790,7 @@ function CssSphereDOMElement (element) {
         local_transform_wrapper.style.transform = local_transform;
 
         if (Date.now() % 60 === 0) {
-            console.log('\n\n***\n**\n*\n\n', this.getArrayFromPosition(this.transforms), '\n\n=======\n\n');
+            console.log('\n\n***\n\n', this.getArrayFromPosition(this.transforms), '\n\n***\n\n');
         }
     };
 

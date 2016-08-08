@@ -184,31 +184,31 @@
                         case 32:
                             self.play_image.dispatchEvent(new Event('click'));
                             break;
-
-                        // Arrow left: beginning
-                        case 37:
-                            self.current_step = 0.0;
-                            self.position_time_from_steps();
-                            break;
-
-                        // Arrow right: end
-                        case 39:
-                            self.current_step = self.bar_steps;
-                            self.position_time_from_steps();
-
-                            break;
-
-                        // Arrow up: one step forward
-                        case 38:
-                            self.current_step = self.current_step < (self.bar_steps) ? self.current_step + 1 : self.current_step;
-                            self.position_time_from_steps();
-                            break;
-
-                        // Arrow down: one step back
-                        case 40:
-                            self.current_step = self.current_step > 0 ? self.current_step - 1 : self.current_step;
-                            self.position_time_from_steps();
-                            break;
+                        //
+                        // // Arrow left: beginning
+                        // case 37:
+                        //     self.current_step = 0.0;
+                        //     self.position_time_from_steps();
+                        //     break;
+                        //
+                        // // Arrow right: end
+                        // case 39:
+                        //     self.current_step = self.bar_steps;
+                        //     self.position_time_from_steps();
+                        //
+                        //     break;
+                        //
+                        // // Arrow up: one step forward
+                        // case 38:
+                        //     self.current_step = self.current_step < (self.bar_steps) ? self.current_step + 1 : self.current_step;
+                        //     self.position_time_from_steps();
+                        //     break;
+                        //
+                        // // Arrow down: one step back
+                        // case 40:
+                        //     self.current_step = self.current_step > 0 ? self.current_step - 1 : self.current_step;
+                        //     self.position_time_from_steps();
+                        //     break;
 
                     }
                 }, false);

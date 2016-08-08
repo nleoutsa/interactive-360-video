@@ -1,55 +1,29 @@
-
-#textAnnotation:link,
-#textAnnotation:visited,
-#textAnnotation {
-    width: 200px;
-    height: 200px;
-    font-size: 60px;
-
-    background-color: #fff;
-    border: 30px solid #ffaa00;
-    color: #333;
-    text-align: center;
-    -webkit-transition: background-color 0.3s ease, color 0.3s ease;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-}
-#textAnnotation:hover {
-    background-color: #cc8800;
-    color: #fff;
-}
-
-#imageAnnotation {
-    -webkit-transition: box-shadow 0.3s ease;
-    transition: box-shadow 0.3s ease;
-}
-#imageAnnotation:hover {
-    box-shadow: 0 0 50px 15px #fff;
-}
-
-#formAnnotation {
-    width: 350px;
-    height: 400px;
-    background-color: #fff;
-    font-size: 40px;
-    text-align: center;
-    padding: 20px;
-}
-#formAnnotation label {
-    display: block;
-    text-align: left;
-    width: 100%;
-}
-#formAnnotation input {
-    position: absolute;
+#chapterMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
     right: 0;
     height: 40px;
-    font-size: 40px;
-    width: 190px;
+    border-bottom: 2px solid #fff;
+    z-index: 99999999;
+    text-align: center;
 }
-#formAnnotation button {
-    font-size: 40px;
-    margin-top: 20px;
+.sceneButton {
+    width: 70px;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 5px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+    font-family: Sans-Serif;
+    display: inline-block;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
+.sceneButton:hover {
+    background-color: #fff;
+    color: #333;
 }
 
 #instructions {
@@ -64,37 +38,21 @@
     margin: 20px;
 }
 
+.hotspot,
 .imageLink {
-    -webkit-transition: 0.2s box-shadow 0.2s ease, border 0.2s ease;
-    transition: 0.2s box-shadow 0.2s ease, border 0.2s ease;
-}
-#hapyak-icon {
-    width: 300px;
-}
-#mummy {
-    width: 300px;
-}
-#rebelWithoutACause {
-    width: 300px;
-}
-#breakfastAtTiffanys {
-    width: 300px;
+    transition: box-shadow 0.2s ease;
 }
 
-#hotspotInitial {
-    width: 300px;
-    height: 300px;
-}
 .hotspot {
     width: 300px;
     height: 300px;
-    -webkit-transition: 0.2s box-shadow 0.2s ease;
-    transition: 0.2s box-shadow 0.2s ease;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    cursor: pointer;
 }
 .hotspot:hover,
 .imageLink:hover {
     box-shadow: 0 0 50px 15px #fff;
-    border: 5px solid #fff;
 }
 
 #dummyWrapper {
@@ -102,3 +60,69 @@
     width: 300px;
     height: 300px;
 }
+
+/* Scene 1 */
+#mummy {
+    width: 300px;
+    opacity: 0.7;
+}
+#hotspotParis {
+    width: 388px;
+}
+#hotspotMontMarte {
+    width: 455px;
+}
+#hotspotSacreCouer {
+    width: 382px;
+}
+
+/* Scene 2 */
+#hotspotEiffel {
+    width: 328px;
+    height: 127px;
+}
+#hotspotOperaGarnier {
+    width: 447px;
+}
+#hotspotLafayetteGallery {
+    width: 518px;
+}
+
+/* Scene 3 */
+#hotspotLafayetteGallery {
+    width: 518px;
+}
+#hotspot28Hotels {
+    width: 424px;
+    height: 195px;
+    border: 1px solid #333;
+}
+#hotspot28Hotels:hover {
+    border: 1px solid plum;
+    box-shadow: 0 0 50px 15px plum;
+}
+
+/* Scene 4 */
+
+/* Scene 5 */
+#rebelWithoutACause {
+    width: 300px;
+    opacity: 0.7;
+}
+#breakfastAtTiffanys {
+    width: 300px;
+    opacity: 0.7;
+}
+#nobodyLikesMe {
+    width: 270px;
+    opacity: 0.7;
+}
+
+#hotspotBateauxMouches {
+    width: 460px;
+    height: 245px;
+}
+
+/* Scene 6 */
+
+/* Scene 7 */
