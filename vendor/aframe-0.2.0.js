@@ -53324,13 +53324,13 @@
 
             // Mouse Events
             canvasEl.addEventListener('mousedown', this.onMouseDown, false);
-            canvasEl.addEventListener('mousemove', this.onMouseMove, false);
+            document.body.addEventListener('mousemove', this.onMouseMove, false);
             canvasEl.addEventListener('mouseup', this.releaseMouse, false);
-            canvasEl.addEventListener('mouseout', this.releaseMouse, false);
+            // canvasEl.addEventListener('mouseout', this.releaseMouse, false);
 
             // Touch events
             canvasEl.addEventListener('touchstart', this.onTouchStart);
-            canvasEl.addEventListener('touchmove', this.onTouchMove);
+            document.body.addEventListener('touchmove', this.onTouchMove);
             canvasEl.addEventListener('touchend', this.onTouchEnd);
         },
 
@@ -53341,13 +53341,13 @@
 
             // Mouse Events
             canvasEl.removeEventListener('mousedown', this.onMouseDown);
-            canvasEl.removeEventListener('mousemove', this.onMouseMove);
+            document.body.removeEventListener('mousemove', this.onMouseMove);
             canvasEl.removeEventListener('mouseup', this.releaseMouse);
-            canvasEl.removeEventListener('mouseout', this.releaseMouse);
+            // canvasEl.removeEventListener('mouseout', this.releaseMouse);
 
             // Touch events
             canvasEl.removeEventListener('touchstart', this.onTouchStart);
-            canvasEl.removeEventListener('touchmove', this.onTouchMove);
+            document.body.removeEventListener('touchmove', this.onTouchMove);
             canvasEl.removeEventListener('touchend', this.onTouchEnd);
         },
 
