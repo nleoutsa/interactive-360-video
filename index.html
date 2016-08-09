@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CssSphere</title>
+
+        <link rel="stylesheet" type="text/css" href="css/cssSphere.css">
+        <link rel="stylesheet" type="text/css" href="css/myCss.css">
+
+        <!-- Vendor files-->
+        <script src="vendor/aframe-0.2.0.js"></script>
+        <script src="vendor/aframe-video-controls.js"></script>
+    </head>
+    <body>
+        <div id="chapterMenu">
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(0);">Start</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(29);">Scene 1</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(55.2);">Scene 2</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(85.5);">Scene 3</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(116.3);">Scene 4</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(146.1);">Scene 5</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(177.9);">Scene 6</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(207.4);">Scene 7</div>
+            <div class="sceneButton" onclick="myCssSphere.seekToTime(238);">Scene 8</div>
+        </div>
+
+        <div id="cssSphereContainer"></div>
+
+        <!-- Scene Start -->
+        <iframe class="cssSphereElement" id="connectForm" src="iframes/connect_form.html" frameborder="0"></iframe>
+
+        <a class="cssSphereElement hotspot" id="dummyWrapper" href="//hapyak.com" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="scene5" onclick="myCssSphere.seekToTime(146.1);"></a>
+        <img class="cssSphereElement" id="hyLogo" src="images/hy_icon.png"/>
+
+        <!-- Scene 1 -->
+        <a class="cssSphereElement hotspot" id="hotspotParis" href="//wikipedia.org/wiki/paris" target="_blank"></a>
+        <a class="cssSphereElement imageLink" id="mummyWrapper" href="//en.wikipedia.org/wiki/The_Mummy_(1932_film)" target="_blank"><img id="mummy" src="images/mummy.jpg"></a>
+        <a class="cssSphereElement hotspot" id="hotspotMontMarte" href="https://en.wikipedia.org/wiki/Montmartre" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotSacreCouer" href="https://en.wikipedia.org/wiki/Sacr%C3%A9-C%C5%93ur,_Paris" target="_blank"></a>
+
+        <!-- Scene 2 -->
+        <a class="cssSphereElement hotspot" id="hotspotLafayetteGallery" href="https://en.wikipedia.org/wiki/Galeries_Lafayette" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotOperaGarnier" href="//wikipedia.org/wiki/opera_Garnier" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotEiffel" href="//wikipedia.org/wiki/eiffel_tower" target="_blank"></a>
+
+        <!-- Scene 3 -->
+        <a class="cssSphereElement hotspot" id="hotspotVendomeSquare" href="https://en.wikipedia.org/wiki/Place_Vend%C3%B4me" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotVendomeColumn" href="https://en.wikipedia.org/wiki/Place_Vend%C3%B4me#The_Vend.C3.B4me_Column" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspot28Hotels" href="https://en.wikipedia.org/wiki/Place_Vend%C3%B4me#H.C3.B4tels_particuliers" target="_blank"></a>
+
+        <!-- Scene 4 -->
+        <a class="cssSphereElement hotspot" id="hotspotTuileriesGarden" href="https://en.wikipedia.org/wiki/Tuileries_Garden" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotLouvre1" href="https://en.wikipedia.org/wiki/Louvre" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotGreatWheel" href="https://en.wikipedia.org/wiki/Roue_de_Paris" target="_blank"></a>
+
+        <!-- Scene 5 -->
+        <a class="cssSphereElement hotspot" id="hotspotRiverSeine" href="//wikipedia.org/wiki/Seine" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotBateauxMouches" href="//wikipedia.org/wiki/bateaux_Mouches" target="_blank"></a>
+        <a class="cssSphereElement imageLink" id="rebelWithoutACauseWrapper" href="//en.wikipedia.org/wiki/Rebel_Without_a_Cause" target="_blank"><img id="rebelWithoutACause" src="images/rebelWithoutACause.jpg"/></a>
+        <a class="cssSphereElement imageLink" id="breakfastAtTiffanysWrapper" href="//en.wikipedia.org/wiki/Breakfast_at_Tiffany%27s_(film)" target="_blank"><img id="breakfastAtTiffanys" src="images/breakfastAtTiffanys.jpg"/></a>
+        <a class="cssSphereElement hotspot" id="hotspotPontsDuArts2" href="https://en.wikipedia.org/wiki/Pont_des_Arts" target="_blank"></a>
+        <img class="cssSphereElement" id="nobodyLikesMe" src="images/nobodyLikesMe.png"/>
+
+        <!-- Scene 6 -->
+        <img class="cssSphereElement" id="arrow" src="images/arrow.png"/>
+        <img class="cssSphereElement" id="arrow2" src="images/arrow.png"/>
+
+        <a class="cssSphereElement hotspot" id="hotspotPontsDuArts" href="//wikipedia.org/wiki/Ponts_Des_Arts" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotEiffel2" href="//wikipedia.org/wiki/Eiffel_Tower" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotIleDeLACitee" href="https://en.wikipedia.org/wiki/%C3%8Ele_de_la_Cit%C3%A9" target="_blank"></a>
+
+        <!-- Scene 7 -->
+        <a class="cssSphereElement hotspot" id="hotspotPlaceDeLaConcorde" href="https://en.wikipedia.org/wiki/Place_de_la_Concorde" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotObeliskOfLuxor" href="https://en.wikipedia.org/wiki/Luxor_Obelisk" target="_blank"></a>
+        <a class="cssSphereElement hotspot" id="hotspotChampsElysees" href="https://en.wikipedia.org/wiki/Champs-%C3%89lys%C3%A9es" target="_blank"></a>
+
+        <!-- Scene 8 -->
+        <a class="cssSphereElement" id="catDance" href="http://s675.photobucket.com/user/Bekkiehere/media/Our%20Animal%20Friends/evj4ayFaZgPx.gif.html" target="_blank"><img src="http://i675.photobucket.com/albums/vv119/Bekkiehere/Our%20Animal%20Friends/evj4ayFaZgPx.gif" border="0" alt=" photo evj4ayFaZgPx.gif"/></a>
+
+        <!-- Scripts -->
+        <script type="text/javascript" src="js/cssSphere.js"></script>
+        <script type="text/javascript">
+            var myCssSphere = new CssSphere();
+
+            var sceneOptions = {
+                'src': 'videos/paris360.mp4',
+                'controls': true
+            };
+
+            myCssSphere.generateScene(sceneOptions, startScene);
+
+            function startScene () {
+
+                // Scene "Start"
+                myCssSphere.addDOMElementToScene({
+                    'id': 'connectForm', // id of DOM element to add
+                    'transform': [ // array of values for positioning
+                        0, 0, 0, // global translation x, y, z,
+                        0, 0, 0, // global translation x, y, z,
+                        0, 0, 0, // local rotation x, y, z,
+                        0, 0, 0 // scale difference x, y, z
+                    ],
+                    'start': 0, // Start time of annotation in seconds
+                    'end': 26 // End time of annotation in seconds
+                });
+
+                // Scene 1
+                myCssSphere.addDOMElementToScene({
+                    'id': 'mummyWrapper',
+                    'transform': [0, 0, 0, 2750, 4600, 0, 0, -64, 0, 0, 0, 0],
+                    'start': 24,
+                    'end': 54
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotParis',
+                    'transform': [-8.708958485988521, 36.93656227101722, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 29,
+                    'end': 54
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotMontMarte',
+                    'transform': [4.58366236104659, 117.54637176296586, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 35,
+                    'end': 54
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotSacreCouer',
+                    'transform': [-33.919101471744746, 152.49679726594584, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 40.3,
+                    'end': 53.4
+                });
+
+                // Scene 2
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotOperaGarnier',
+                    'transform': [-14.896902673401398, 123.04676659622154, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 62,
+                    'end': 85
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotEiffel',
+                    'transform': [-10.313240312354823, 40.317188644913756, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 60,
+                    'end': 84
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotLafayetteGallery',
+                    'transform': [-5.729577951308228, 235.17995938628158, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 64,
+                    'end': 84
+                });
+
+                // Scene 3
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotVendomeSquare',
+                    'transform': [11.344564343590324, 546.0042109617932, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 91.3,
+                    'end': 115
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotVendomeColumn',
+                    'transform': [-30.8251293780383, 108.32710354431812, 0, 0, 0, 0, 10, 0, -2, 0, 0, 0],
+                    'start': 96,
+                    'end': 115
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspot28Hotels',
+                    'transform': [-32.65859432245693, -43.27752904729806, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 100.7,
+                    'end': 115
+                });
+
+                // Scene 4
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotTuileriesGarden',
+                    'transform': [9.51109939917167, 127.80766857876671, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 119.5,
+                    'end': 145
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotLouvre1',
+                    'transform': [-16.386592940741547, 76.81442481212366, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 129,
+                    'end': 144
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotGreatWheel',
+                    'transform': [-17.647100090029355, -65.62288305739844, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 134.4,
+                    'end': 144
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hyLogo',
+                    'transform': [90, -81.58919002662927, 0, 0, -10000, 0, 0, 0, 0, 10, 10, 0],
+                    'start': 116,
+                    'end': 144
+                });
+
+                // Scene 5
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotRiverSeine',
+                    'transform': [8.479775367936188, 95.60744049241305, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 149.5,
+                    'end': 177
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotBateauxMouches',
+                    'transform': [-12, 16.195490087281424, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'animationEnd': [-13.178029288008934, 63.865578642165936, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 153.6,
+                    'end': 177
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'rebelWithoutACauseWrapper',
+                    'transform': [-4.010704565915763, -123.41510907117922, 0, 9420, -1020, 0, 5, 0, 0, 0, 0, 0],
+                    'start': 146.2,
+                    'end': 177
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'breakfastAtTiffanysWrapper',
+                    'transform': [-3.552338329811106, -123.30051751215312, 0, -4540, -1020, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 146.2,
+                    'end': 177
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotPontsDuArts2',
+                    'transform': [-11.137805156445326, 123.78708163679947, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 162.2,
+                    'end': 177
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'nobodyLikesMe',
+                    'transform': [1.1459155902616456, -123.30051751215312, 0, 890, 290, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 146.2,
+                    'end': 177
+                });
+
+                // Scene 6
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotPontsDuArts',
+                    'transform': [9.281916281119337, 296.7156265833324, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 186,
+                    'end': 206
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'arrow',
+                    'transform': [90, -79.18276728707981, 0, 0, 8000, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 177.9,
+                    'end': 206
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'arrow2',
+                    'transform': [90, 101.75730441523426, 0, 0, 6500, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 177.9,
+                    'end': 206
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotEiffel2',
+                    'transform': [-13.865578642165904, 316.294813574543, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 190.5,
+                    'end': 206
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotIleDeLACitee',
+                    'transform': [-13.324734544782373, 98.54101859060557, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 196,
+                    'end': 206
+                });
+
+                // Scene 7
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotPlaceDeLaConcorde',
+                    'transform': [6.270422048691788, 61.642536584180526, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 214,
+                    'end': 236.3
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotObeliskOfLuxor',
+                    'transform': [-22.49205926687555, 113.8962875001111, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 219.4,
+                    'end': 236.3
+                });
+                myCssSphere.addDOMElementToScene({
+                    'id': 'hotspotChampsElysees',
+                    'transform': [-15.845748843357999, 227.112747817962, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 223.4,
+                    'end': 236
+                });
+
+                // Scene 8
+                myCssSphere.addDOMElementToScene({
+                    'id': 'catDance',
+                    'transform': [-17.564622228750473, 3.888390834994709, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    'start': 238,
+                    'end': 500
+                });
+
+                // Start on scene 4
+                requestAnimationFrame(function () {
+                    myCssSphere.seekToTime(146.1);
+                });
+            }
+        </script>
+    </body>
+</html>

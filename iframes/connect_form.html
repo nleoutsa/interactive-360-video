@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>Connect Form</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!--Let browser know website is optimized for mobile-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<style>
+
+    body {
+        font-size: 32px;
+        cursor: default;
+    }
+    .instructions {
+        text-align: center;
+        text-size: 28px;
+    }
+    .instructions div {
+        margin-top: 10px;
+    }
+    .instructions div.query {
+        margin-top: 30px;
+    }
+    .input-field input,
+    .input-field label {
+        cursor: text;
+        font-size: 28px;
+        top: 0;
+    }
+    .input-field input.active,
+    .input-field label.active {
+        font-size: 20px;
+    }
+    .form-container {
+        background-color: white;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        padding: 20px;
+        border-radius: 64px;
+        background-image: url(http://hapyak_demos.s3.amazonaws.com/img/hapyak_logo_complete.svg);
+        background-repeat: no-repeat;
+        background-position: 50% 95%;
+        background-size: 200px;
+    }
+    #hiddenElements {
+        margin-top: 20px;
+    }
+    #headshot {
+        padding-left: 0;
+    }
+    .no-bottom {
+        margin-bottom: 0px;
+    }
+    .footer-text {
+        position: absolute;
+        bottom: 10px;
+        left: 130px;
+        font-size: .75em;
+        color: #7a7a7a;
+    }
+
+    .slide-down-header {
+        padding-top: 50%;
+        transition: padding-top 1s ease;
+    }
+
+    #preText {
+        margin-bottom: 0;
+    }
+</style>
+</head>
+<body>
+<div class="form-container">
+    <div id="title" class="row">
+        <div id="headshot" class="col s4">
+            <img src="http://hapyak_demos.s3.amazonaws.com/img/nleoutsa_headshot.jpg" height="150px" width="150px" class="circle responsive-img">
+        </div>
+        <div class="col s8">
+                <h1>Hey there!</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="instructions col s12">
+            <div>Welcome to HapYak's <strong>Interactive 360 Video</strong> demo.</div>
+            <div>Click and drag on the video to look around.</div>
+            <div>You can click elements, navigate to links, even fill out forms like this one <strong>inside a 360 video!</strong></div>
+            <div class="query"><strong>Want to know more?</strong></div>
+        </div>
+    </div>
+
+    <div id="hiddenElements">
+        <div id="emailInput" class="row no-bottom">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="emailAddress" type="text" class="materialize-email" length="165"></input>
+                        <label for="emailAddress" >Email</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="textInput" class="row no-bottom">
+            <div class="col s12">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="textarea" type="text" class="materialize-textarea" length="165"></input>
+                        <label for="textarea" >Thoughts?</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s12 center-align">
+                <a id="submitButton" class="disabled waves-effect waves-light btn" onclick="submitForm()">SUBMIT</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+<script type="text/javascript" src="//d2qrdklrsxowl2.cloudfront.net/js/hapyak-iframe.js"></script>
+<script type="text/javascript" src="//d2qrdklrsxowl2.cloudfront.net/js/hapyak.api.js"></script>
+<script>
+    // Enable / Disable Submit Button
+    $('#emailAddress').focus(function(){
+        $('#submitButton').removeClass('disabled');
+    });
+
+    $('#emailAddress').blur(function(){
+        if (!$('#emailAddress').val()) {
+            $('#submitButton').addClass('disabled');
+        }
+    });
+
+    // Submit Form
+    function submitForm() {
+        if ($('#emailAddress').val()) {
+            var emailAddress = $('#emailAddress').val();
+            var questionText = $('#textarea').val() || 'NO QUESTION ASKED.';
+
+            var http = new XMLHttpRequest();
+            http.open("POST", "http://www.hapyak.com/api/send_mail", true);
+            http.onreadystatechange = function(){
+                if (http.readyState === 4 && http.status === 200) {
+                    $('#headerText').html('Thanks!');
+                    $('#hiddenElements').hide();
+                    $('#title').addClass('slide-down-header');
+                }
+            };
+            var data = {
+                email : emailAddress,
+                cc : "chris@hapyak.com, nleoutsa@hapyak.com",
+                subject : "I'm interested in 360 Interactive Videos!",
+                body : "<div style='min-height:100%;margin:0;padding:0;width:100%;background-color:#f2f2f2'> <center> <table border='0' cellpadding='0' cellspacing='0' height='100%' width='100%' style='border-collapse:collapse;height:100%;margin:0;padding:0;width:100%;background-color:#f2f2f2'> <tbody><tr> <td align='center' valign='top' style='height:100%;margin:0;padding:0;width:100%;border-top:5px solid #ffffff'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse'> <tbody><tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse;background-color:#f2f2f2;border-top:0;border-bottom:0'> <tbody><tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse:collapse'> <tbody><tr> <td valign='top' style='padding-top:10px;padding-bottom:10px'><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse;table-layout:fixed!important'> <tbody> <tr> <td style='min-width:100%;padding:18px'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody><tr> <td> <span></span> </td> </tr> </tbody></table> </td> </tr> </tbody> </table><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody> <tr> <td valign='top' style='padding:9px'> <table align='left' width='100%' border='0' cellpadding='0' cellspacing='0' style='min-width:100%;border-collapse:collapse'> <tbody><tr> <td valign='top' style='padding-right:9px;padding-left:9px;padding-top:0;padding-bottom:0;text-align:center'> <img align='center' alt='' src='https://ci5.googleusercontent.com/proxy/7raN2yrOaiQCJ2bHcT4GYSwfuLTW-6UaWzL_4d4qvbrRr_YpdoDqc4EQEXNgfCM412QgDa67Ta6oHoCtwDarXi5XAnDd7b-LDVvbNBTCYcDcwC0Bs9pUsxtdoBcWZt7OjG4YuQ1M2ADCP87Fj5jOPbpBBaDmy-cHxjGD-k0=s0-d-e1-ft#https://gallery.mailchimp.com/21954fab7a24a7e1c0dd9e120/images/3d6fa2b3-c1c2-4d8b-8b64-50cfe69a292a.png' width='334.5' style='max-width:669px;padding-bottom:0;display:inline!important;vertical-align:bottom;border:0;min-height:auto;outline:none;text-decoration:none' class='CToWUd'> </td> </tr> </tbody></table> </td> </tr> </tbody> </table></td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> <tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse;background-color:#f2f2f2;border-top:0;border-bottom:0'> <tbody><tr> <td align='center' valign='top' style='padding-top:20px;padding-bottom:20px'> <table border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse:collapse'> <tbody><tr> <td align='center' height='10' valign='top' width='10'> </td> <td align='center' height='10' valign='top' style='background-color:#D96369'> </td> <td align='center' height='10' valign='top' width='10'> <img src='https://ci3.googleusercontent.com/proxy/ylUi9jev3rBenA35B_N8MYMan6cpvoPYYkW9PIfPUeogBwfqnykcj6wj4X2D4sQ6cdp43J2ACqryVCnrMCAVXEXIahQ0Nl3YouIKqkt7XGVGdWYzdTjA0BxBILEYfBf0JHAxDoMtxBmCXAJd6sefHLjsyk_udFvPjHoHJaE=s0-d-e1-ft#https://gallery.mailchimp.com/27aac8a65e64c994c4416d6b8/images/d4042106-8117-4b79-b76b-91f8d64c5dff.gif' height='10' width='10' style='display:block;line-height:0px;border:0;min-height:auto;outline:none;text-decoration:none' class='CToWUd'> </td> </tr> <tr> <td align='center' colspan='3' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse;background-color:#d55258;border-bottom:2px solid #bd4046'> <tbody><tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse'> <tbody><tr> <td valign='top' style='padding-top:20px;padding-bottom:20px'><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody> <tr> <td valign='top' style='padding-top:9px'> <table align='left' border='0' cellpadding='0' cellspacing='0' style='max-width:100%;min-width:100%;border-collapse:collapse' width='100%'> <tbody><tr> <td valign='top' style='padding-top:0;padding-right:18px;padding-bottom:9px;padding-left:18px;word-break:break-word;color:#ffffff;font-family:Helvetica;font-size:16px;line-height:150%;text-align:left'> <h1 style='display:block;margin:0;padding:0;font-family:Helvetica;font-size:26px;font-style:normal;font-weight:bold;line-height:125%;letter-spacing:normal;text-align:left;color:#ffffff!important'>Hello!</h1> </td> </tr> </tbody></table> </td> </tr> </tbody> </table><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody> <tr> <td valign='top' style='padding-top:9px'> <table align='left' border='0' cellpadding='0' cellspacing='0' style='max-width:100%;min-width:100%;border-collapse:collapse' width='100%'> <tbody><tr> <td valign='top' style='padding-top:0;padding-right:18px;padding-bottom:9px;padding-left:18px;word-break:break-word;color:#FFFFFF!important;font-family:Helvetica;font-size:16px;line-height:150%;text-align:left'> You have a new question from your Interactive Video Campaign!<br> <br>The question is from: " + emailAddress + "<br> <br><em>Here is the question: </em><br>" + questionText + "<br> </td> </tr> </tbody></table> </td> </tr> </tbody> </table></td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> <tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse;background-color:#f2f2f2;border-top:0;border-bottom:0'> <tbody><tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse:collapse'> <tbody><tr> <td valign='top' style='padding-top:10px;padding-bottom:10px'><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody> <tr> <td valign='top' style='padding-top:9px'> <table align='left' border='0' cellpadding='0' cellspacing='0' style='max-width:100%;min-width:100%;border-collapse:collapse' width='100%'> <tbody><tr> <td valign='top' style='padding-top:0;padding-right:18px;padding-bottom:9px;padding-left:18px;word-break:break-word;color:#606060;font-family:Helvetica;font-size:14px;line-height:150%;text-align:left'> This email was generated from a form submit during the viewing of your HapYak Interactive Video powered AM Campaign.<br> <br> <em>Please reference that video in any communication regarding this email. Be sure to reach out to the customer and answer their question!</em> </td> </tr> </tbody></table> </td> </tr> </tbody> </table></td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> <tr> <td align='center' valign='top' style='padding-bottom:40px'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='border-collapse:collapse;background-color:#f2f2f2;border-top:0;border-bottom:0'> <tbody><tr> <td align='center' valign='top'> <table border='0' cellpadding='0' cellspacing='0' width='600' style='border-collapse:collapse'> <tbody><tr> <td valign='top' style='padding-top:10px;padding-bottom:10px'><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse;table-layout:fixed!important'> <tbody> <tr> <td style='min-width:100%;padding:18px'> <table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-top-width:1px;border-top-style:solid;border-top-color:#aaaaaa;border-collapse:collapse'> <tbody><tr> <td> <span></span> </td> </tr> </tbody></table> </td> </tr> </tbody> </table><table border='0' cellpadding='0' cellspacing='0' width='100%' style='min-width:100%;border-collapse:collapse'> <tbody> <tr> <td valign='top' style='padding-top:9px'> <table align='left' border='0' cellpadding='0' cellspacing='0' style='max-width:100%;min-width:100%;border-collapse:collapse' width='100%'> <tbody><tr> <td valign='top' style='padding-top:0;padding-right:18px;padding-bottom:9px;padding-left:18px;word-break:break-word;color:#aaaaaa;font-family:Helvetica;font-size:10px;line-height:125%;text-align:center'> <em>Copyright 2016 HapYak Interactive Video, All rights reserved.</em><br> <br> <strong>Our mailing address is:</strong><br> 745 Atlantic Avenue<br> Boston, MA 02111<br> <br> Want to change how you receive these emails?<br> You can <a style='color:#aaaaaa;font-weight:normal;text-decoration:underline'>update your preferences</a> or <a style='color:#aaaaaa;font-weight:normal;text-decoration:underline'>unsubscribe from this list</a> </td> </tr> </tbody></table> </td> </tr> </tbody> </table></td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> </tbody></table> </td> </tr> </tbody></table> </center></div>"
+            };
+            http.send(JSON.stringify(data));
+        }
+        else {
+            Materialize.toast('Please enter your email address', 3000);
+        }
+    }
+
+</script>
+</html>

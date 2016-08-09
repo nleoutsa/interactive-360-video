@@ -1,62 +1,222 @@
-
-#textAnnotation:link,
-#textAnnotation:visited,
-#textAnnotation {
-    width: 200px;
-    height: 200px;
-    font-size: 60px;
-
-    background-color: #fff;
-    border: 30px solid #ffaa00;
-    color: #333;
-    text-align: center;
-    -webkit-transition: background-color 0.3s ease, color 0.3s ease;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-}
-#textAnnotation:hover {
-    background-color: #cc8800;
-    color: #fff;
+canvas.a-canvas {
+    cursor: move;
 }
 
-#imageAnnotation {
-    -webkit-transition: box-shadow 0.3s ease;
-    transition: box-shadow 0.3s ease;
-}
-#imageAnnotation:hover {
-    box-shadow: 0 0 30px white;
-}
-
-#formAnnotation {
-    width: 350px;
-    height: 400px;
-    background-color: #fff;
-    font-size: 40px;
-    text-align: center;
-    padding: 20px;
-}
-#formAnnotation label {
-    display: block;
-    text-align: left;
-    width: 100%;
-}
-#formAnnotation input {
-    position: absolute;
+#chapterMenu {
+    position: fixed;
+    top: 0;
+    left: 0;
     right: 0;
     height: 40px;
-    font-size: 40px;
-    width: 190px;
+    border-bottom: 2px solid #fff;
+    z-index: 99999999;
+    text-align: center;
+    background-color: rgba(0,0,0,0.7);
 }
-#formAnnotation button {
-    font-size: 40px;
-    margin-top: 20px;
+.sceneButton {
+    width: 70px;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 5px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    color: #fff;
+    font-family: Sans-Serif;
+    display: inline-block;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+}
+.sceneButton:hover {
+    background-color: #fff;
+    color: #333;
 }
 
-#moviePoster {
-    width: 300px;
-    -webkit-transition: box-shadow 0.3s ease;
-    transition: box-shadow 0.3s ease;
+#instructions {
+    text-align: center;
+    padding: 50px;
+    background-color: #fff;
+    width: 700px;
+    font-size: 2em;
+    border-radius: 100px;
 }
-#moviePoster:hover {
-    box-shadow: 0 0 30px white;
+#instructions div {
+    margin: 20px;
+}
+
+#connectForm {
+    height: 920px;
+    width: 750px;
+    -webkit-border-radius:;
+    -moz-border-radius:;
+    border-radius: 100px;
+}
+
+.hotspot,
+.imageLink {
+    transition: box-shadow 0.2s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hotspot {
+    width: 300px;
+    height: 300px;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.hotspot:hover,
+.imageLink:hover {
+    box-shadow: 0 0 50px 15px #fff;
+}
+
+#dummyWrapper {
+    border: 5px dotted deeppink;
+    width: 300px;
+    height: 300px;
+}
+
+/* Scene 1 */
+#hyLogo {
+    width: 500px;
+    opacity: 0.4;
+}
+#mummy {
+    width: 300px;
+    opacity: 0.7;
+}
+#hotspotParis {
+    width: 388px;
+}
+#hotspotMontMarte {
+    width: 455px;
+}
+#hotspotSacreCouer {
+    width: 382px;
+}
+
+/* Scene 2 */
+#hotspotEiffel {
+    width: 328px;
+    height: 127px;
+}
+#hotspotOperaGarnier {
+    width: 447px;
+}
+#hotspotLafayetteGallery {
+    width: 518px;
+}
+
+/* Scene 3 */
+#hotspotVendomeColumn {
+    width: 518px;
+}
+#hotspotVendomeSquare {
+    width: 490px;
+}
+#hotspot28Hotels {
+    width: 424px;
+    height: 195px;
+    border: 1px solid #333;
+}
+#hotspot28Hotels:hover {
+    border: 1px solid plum;
+    box-shadow: 0 0 50px 15px plum;
+}
+
+/* Scene 4 */
+#hotspotTuileriesGarden {
+    width: 510px;
+}
+#hotspotGreatWheel {
+    width: 454px;
+}
+#hotspotLouvre1 {
+    width: 442px;
+    height: 200px;
+    border: 1px solid #333;
+}
+#hotspotLouvre1:hover {
+    border: 1px solid plum;
+    box-shadow: 0 0 50px 15px plum;
+}
+
+/* Scene 5 */
+#rebelWithoutACause {
+    width: 300px;
+    opacity: 0.7;
+}
+#breakfastAtTiffanys {
+    width: 300px;
+    opacity: 0.7;
+}
+#nobodyLikesMe {
+    width: 270px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#nobodyLikesMe:hover {
+    opacity: 1;
+}
+#hotspotBateauxMouches {
+    width: 460px;
+    height: 245px;
+}
+#hotspotRiverSeine {
+    width: 363px;
+}
+#hotspotPontsDuArts2 {
+    width: 415px;
+    height: 164px;
+}
+
+/* Scene 6 */
+#hotspotPontsDuArts {
+    width: 568px;
+}
+#arrow,
+#arrow2 {
+    width: 2000px;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#arrow:hover,
+#arrow2:hover {
+    width: 2000px;
+    opacity: 1;
+}
+#hotspotEiffel2 {
+    width: 337px;
+    height: 139px;
+}
+#hotspotIleDeLACitee {
+    width: 411px;
+    height: 240px;
+}
+
+/* Scene 7 */
+#hotspotPlaceDeLaConcorde {
+    width: 550px;
+}
+#hotspotChampsElysees {
+    width: 485px;
+    height: 232px;
+}
+#hotspotObeliskOfLuxor {
+    width: 455px;
+}
+
+/* Scene 8 */
+#hotspotEiffel3 {
+    width: 550px;
 }
