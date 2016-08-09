@@ -88,6 +88,7 @@ function CssSphere (containerId) {
             progressBar.style.top = 0;
             progressBar.style.bottom = 0;
             progressBar.style.cursor = 'pointer';
+            progressBar.style.backgroundColor = 'rgba(0,0,0,0.7)';
 
             progress.style.position = 'absolute';
             progress.style.right = '100%';
@@ -309,6 +310,8 @@ function CssSphere (containerId) {
         window.requestAnimationFrame(function () {
             var rotation = self.rotation();
             var currentTime = self.videoElement.currentTime;
+            var duration = self.videoElement.duration;
+            var progressElement = self.progressElement;
             var activeDOMElement;
             var i;
 
@@ -316,9 +319,9 @@ function CssSphere (containerId) {
             self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotation.x + 'deg) rotateY(' + -rotation.y + 'deg)';
 
             // Update progress bar if present
-            if (self.progressElement) {
-                self.progressElement.style.right = 100 - ((100 * currentTime / self.videoElement.duration)) + '%';
-                self.progressTime.innerHTML = currentTime.toFixed(2) + ' / ' + self.videoElement.duration.toFixed(2);
+            if (progressElement) {
+                progressElement.style.right = 100 - ((100 * currentTime / duration)) + '%';
+                self.progressTime.innerHTML = currentTime.toFixed(2) + ' / ' + duration.toFixed(2);
             }
 
             // Update annotations

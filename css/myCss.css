@@ -11,6 +11,7 @@ canvas.a-canvas {
     border-bottom: 2px solid #fff;
     z-index: 99999999;
     text-align: center;
+    background-color: rgba(0,0,0,0.7);
 }
 .sceneButton {
     width: 70px;
@@ -53,6 +54,10 @@ canvas.a-canvas {
 .hotspot,
 .imageLink {
     transition: box-shadow 0.2s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .hotspot {
@@ -74,6 +79,10 @@ canvas.a-canvas {
 }
 
 /* Scene 1 */
+#hyLogo {
+    width: 500px;
+    opacity: 0.4;
+}
 #mummy {
     width: 300px;
     opacity: 0.7;
@@ -146,6 +155,14 @@ canvas.a-canvas {
 #nobodyLikesMe {
     width: 270px;
     opacity: 0.7;
+    transition: opacity 0.3s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#nobodyLikesMe:hover {
+    opacity: 1;
 }
 #hotspotBateauxMouches {
     width: 460px;
@@ -153,6 +170,10 @@ canvas.a-canvas {
 }
 #hotspotRiverSeine {
     width: 363px;
+}
+#hotspotPontsDuArts2 {
+    width: 415px;
+    height: 164px;
 }
 
 /* Scene 6 */
@@ -162,6 +183,17 @@ canvas.a-canvas {
 #arrow,
 #arrow2 {
     width: 2000px;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#arrow:hover,
+#arrow2:hover {
+    width: 2000px;
+    opacity: 1;
 }
 #hotspotEiffel2 {
     width: 337px;
