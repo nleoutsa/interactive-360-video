@@ -53325,7 +53325,7 @@
             // Mouse Events
             canvasEl.addEventListener('mousedown', this.onMouseDown, false);
             document.body.addEventListener('mousemove', this.onMouseMove, false);
-            canvasEl.addEventListener('mouseup', this.releaseMouse, false);
+            document.body.addEventListener('mouseup', this.releaseMouse, false);
             // canvasEl.addEventListener('mouseout', this.releaseMouse, false);
 
             // Touch events
@@ -53342,7 +53342,7 @@
             // Mouse Events
             canvasEl.removeEventListener('mousedown', this.onMouseDown);
             document.body.removeEventListener('mousemove', this.onMouseMove);
-            canvasEl.removeEventListener('mouseup', this.releaseMouse);
+            document.body.removeEventListener('mouseup', this.releaseMouse);
             // canvasEl.removeEventListener('mouseout', this.releaseMouse);
 
             // Touch events
