@@ -366,13 +366,19 @@ function CssSphere (containerId) {
                 if (activeDOMElement.options.animationEnd) {
                     updateAnimation(activeDOMElement, currentTime);
                 }
+            }
 
-                // Handle 'global rotation' controllers that are toggled on.
-                if (activeDOMElement.activeGlobalRotationControllers.x) {
-                    activeDOMElement.updateGlobalRotation('x', -rotation.x + -activeDOMElement.startingRotation.x);
-                }
-                if (activeDOMElement.activeGlobalRotationControllers.y) {
-                    activeDOMElement.updateGlobalRotation('y', rotation.y + activeDOMElement.startingRotation.y);
+            if (self.editMode) {
+                for (i = 0; i < self.visibleDOMElements.length; i++) {
+                    activeDOMElement = self.visibleDOMElements[i];
+
+                    // Handle 'global rotation' controllers that are toggled on.
+                    if (activeDOMElement.activeGlobalRotationControllers.x) {
+                        activeDOMElement.updateGlobalRotation('x', -rotation.x + -activeDOMElement.startingRotation.x);
+                    }
+                    if (activeDOMElement.activeGlobalRotationControllers.y) {
+                        activeDOMElement.updateGlobalRotation('y', rotation.y + activeDOMElement.startingRotation.y);
+                    }
                 }
             }
 
