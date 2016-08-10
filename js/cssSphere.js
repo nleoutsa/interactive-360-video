@@ -8,12 +8,16 @@
 function CssSphere (containerId) {
     var self = this;
 
+    var progressElement;
+
     this.container = document.getElementById(containerId || 'cssSphereContainer');
 
-    this.perspective = function () {
+    this.perspective = (self.sceneHeight / 2) + (self.sceneHeight / 8) + (self.sceneHeight / 32) + (self.sceneHeight / 128);
+
+    function calculatePerspective () {
         // TODO: find more accurate way to calculate perspective;
-        return (self.sceneHeight / 2) + (self.sceneHeight / 8) + (self.sceneHeight / 32) + (self.sceneHeight / 128);
-    };
+        self.perspective = (self.sceneHeight / 2) + (self.sceneHeight / 8) + (self.sceneHeight / 32) + (self.sceneHeight / 128);
+    }
 
     this.rotation = function () {
         return self.camera.components.rotation.data;
@@ -45,6 +49,9 @@ function CssSphere (containerId) {
             videoSource,
             aCursor,
             videoControls;
+
+        this.addedDOMElements = [];
+        this.visibleDOMElements = [];
 
         // Get source extension
         if (options.src && typeof options.src === 'string') {
@@ -217,14 +224,21 @@ function CssSphere (containerId) {
         self.container.appendChild(self.sphere);
 
         // Set perspective: this must be accurate to maintain positioning as video warps.
-        self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
+        self.sphere.style.transform = 'perspective(' + self.perspective + 'px) translateX(0) translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg)';
 
         // called to add DOM elements of a specific class to the scene. IN PROGRESS
         // self.addDOMElementsFromClass();
 
         window.onload = function () {
             self.sceneHeight = self.aScene.canvas.clientHeight;
+            calculatePerspective();
+            progressElement = self.progressElement;
+
             self.updateSphere(0);
+        };
+
+        window.onresize = function () {
+            calculatePerspective();
         };
 
         // fire callback if one is provided
@@ -256,8 +270,6 @@ function CssSphere (containerId) {
         self.videoElement.play();
         updatePlayButton();
     };
-
-    this.addedDOMElements = [];
 
     this.addDOMElementToScene = function (options) {
         // Get the DOM element
@@ -299,24 +311,26 @@ function CssSphere (containerId) {
         css_sphere_dom_element.setPositionFromArray(transformArray || [0,0,0,0,0,0,0,0,0,0,0,0]);
         css_sphere_dom_element.currentlyVisible = true;
         self.sphere.appendChild(css_sphere_dom_element.el());
+        self.visibleDOMElements.push(css_sphere_dom_element);
     };
 
     this.removeElementFromScene = function (css_sphere_dom_element) {
         css_sphere_dom_element.currentlyVisible = false;
         self.sphere.removeChild(css_sphere_dom_element.el());
+        self.visibleDOMElements.splice(css_sphere_dom_element, 1);
     };
 
     this.updateSphere = function (cycle) {
         window.requestAnimationFrame(function () {
             var rotation = self.rotation();
-            var currentTime = self.videoElement.currentTime;
             var duration = self.videoElement.duration;
-            var progressElement = self.progressElement;
+            var currentTime = self.videoElement.currentTime;
+
             var activeDOMElement;
             var i;
 
-            // Rotate CSS Sphere.
-            self.sphere.style.transform = 'perspective(' + self.perspective() + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotation.x + 'deg) rotateY(' + -rotation.y + 'deg)';
+            // Update CSS Sphere rotation EVERY frame
+            self.sphere.style.transform = 'perspective(' + self.perspective + 'px) translateX(0) translateY(0) translateZ(0) rotateX(' + rotation.x + 'deg) rotateY(' + -rotation.y + 'deg)';
 
             // Update progress bar if present
             if (progressElement) {
@@ -324,20 +338,39 @@ function CssSphere (containerId) {
                 self.progressTime.innerHTML = currentTime.toFixed(2) + ' / ' + duration.toFixed(2);
             }
 
-            // Update annotations
-            for (i = 0; i < self.addedDOMElements.length; i++) {
-                activeDOMElement = self.addedDOMElements[i];
+            // Cycle through ALL DOM elements every X frames
+            if (cycle % 20 === 0) {
 
-                if (activeDOMElement.options.start <= currentTime && activeDOMElement.options.end >= currentTime) {
-                    // Add element to scene if it isn't already visible.
-                    if (activeDOMElement.currentlyVisible === false) {
-                        self.addElementToScene(activeDOMElement, activeDOMElement.options.transform);
-                    }
+                // Set visible elements
+                for (i = 0; i < self.addedDOMElements.length; i++) {
+                    activeDOMElement = self.addedDOMElements[i];
 
-                    // Handle simple animations
-                    if (activeDOMElement.options.animationEnd) {
-                        updateAnimation(activeDOMElement, currentTime);
+                    if (activeDOMElement.options.start >= currentTime || activeDOMElement.options.end <= currentTime) {
+                        // Remove elements which shouldn't be visible.
+                        if (activeDOMElement.currentlyVisible === true) {
+                            self.removeElementFromScene(activeDOMElement);
+                        }
+                    } else {
+                        // Add element to scene if it isn't already visible.
+                        if (activeDOMElement.currentlyVisible === false) {
+                            self.addElementToScene(activeDOMElement, activeDOMElement.options.transform);
+                        }
                     }
+                }
+            }
+
+            for (i = 0; i < self.visibleDOMElements.length; i++) {
+                activeDOMElement = self.visibleDOMElements[i];
+
+                // Cycle through visible DOM elements every frame:
+                if (activeDOMElement.options.animationEnd) {
+                    updateAnimation(activeDOMElement, currentTime);
+                }
+            }
+
+            if (self.editMode) {
+                for (i = 0; i < self.visibleDOMElements.length; i++) {
+                    activeDOMElement = self.visibleDOMElements[i];
 
                     // Handle 'global rotation' controllers that are toggled on.
                     if (activeDOMElement.activeGlobalRotationControllers.x) {
@@ -345,10 +378,6 @@ function CssSphere (containerId) {
                     }
                     if (activeDOMElement.activeGlobalRotationControllers.y) {
                         activeDOMElement.updateGlobalRotation('y', rotation.y + activeDOMElement.startingRotation.y);
-                    }
-                } else {
-                    if (activeDOMElement.currentlyVisible === true) {
-                        self.removeElementFromScene(activeDOMElement);
                     }
                 }
             }
@@ -794,10 +823,6 @@ function CssSphereDOMElement (element) {
 
         global_transform_wrapper.style.transform = global_transform;
         local_transform_wrapper.style.transform = local_transform;
-
-        if (Date.now() % 60 === 0) {
-            console.log('\n\n***\n\n', this.getArrayFromPosition(this.transforms), '\n\n***\n\n');
-        }
     };
 
     this.setPositionFromArray = function (transform_array) {
@@ -805,6 +830,7 @@ function CssSphereDOMElement (element) {
 
         var i,
             axis;
+
         for (i = 0; i < axes.length; i++) {
             axis = axes[i];
             this.transforms.global.rotation[axis] = transform_array[i];
