@@ -1,7 +1,10 @@
 
 /*
 ********************************************************
-    API
+    Copyright: Trapelo Corp (DBA: HapYak Interactive Video) 2016
+    Author: Nick Leoutsakos, 2016
+    Demo:   https://corp.hapyak.com/resources/interactive-360-videos-accuracy/
+    Github: https://github.com/hapyak/hackday/tree/master/interactive360video
 ********************************************************
 */
 
